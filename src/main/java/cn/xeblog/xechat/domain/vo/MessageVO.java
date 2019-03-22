@@ -1,5 +1,7 @@
 package cn.xeblog.xechat.domain.vo;
 
+import cn.xeblog.xechat.domain.mo.User;
+import cn.xeblog.xechat.enums.MessageTypeEnum;
 import lombok.*;
 
 import java.io.Serializable;
@@ -18,17 +20,9 @@ public class MessageVO implements Serializable {
     private static final long serialVersionUID = -1455469852669257711L;
 
     /**
-     * 昵称
+     * 用户
      */
-    private String username;
-    /**
-     * 头像
-     */
-    private String avatar;
-    /**
-     * 地理位置
-     */
-    private String address;
+    private User user;
     /**
      * 消息信息
      */
@@ -36,6 +30,6 @@ public class MessageVO implements Serializable {
     /**
      * 消息类型 1.系统 2.用户
      */
-    private int type;
+    private MessageTypeEnum type;
 
 }

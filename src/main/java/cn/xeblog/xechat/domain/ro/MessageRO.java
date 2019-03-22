@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * 消息请求
  *
@@ -13,7 +15,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class MessageRO {
+public class MessageRO implements Serializable {
+
+    private static final long serialVersionUID = 3544216886850149310L;
 
     /**
      * 接受者

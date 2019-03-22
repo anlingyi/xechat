@@ -1,26 +1,26 @@
 package cn.xeblog.xechat.exception;
 
-import cn.xeblog.xechat.enums.CodeEnums;
+import cn.xeblog.xechat.enums.inter.Code;
 
 /**
- * 自定义错误异常
+ * 返回错误码
  *
  * @author yanpanyi
  * @date 2019/3/20
  */
 public class ErrorCodeException extends Exception {
 
-    private CodeEnums codeEnums;
+    private Code code;
 
-    public ErrorCodeException(CodeEnums codeEnums) {
-        this.codeEnums = codeEnums;
+    public ErrorCodeException(Code code) {
+        this.code = code;
     }
 
-    public CodeEnums getCodeEnums() {
-        return codeEnums;
+    public Code getCode() {
+        return code;
     }
 
-    public void setCodeEnums(CodeEnums codeEnums) {
-        this.codeEnums = codeEnums;
+    public void setCode(Code code) {
+        this.code = code;
     }
 }

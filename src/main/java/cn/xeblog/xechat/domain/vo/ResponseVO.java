@@ -1,6 +1,7 @@
 package cn.xeblog.xechat.domain.vo;
 
-import cn.xeblog.xechat.enums.CodeEnums;
+import cn.xeblog.xechat.enums.CodeEnum;
+import cn.xeblog.xechat.enums.inter.Code;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,7 @@ import java.io.Serializable;
 public class ResponseVO implements Serializable {
 
     private static final long serialVersionUID = -5327212050370584991L;
-    private static final CodeEnums success = CodeEnums.SUCCESS;
+    private static final CodeEnum success = CodeEnum.SUCCESS;
 
     /**
      * 响应码
@@ -50,11 +51,11 @@ public class ResponseVO implements Serializable {
     /**
      * 只带响应code和desc
      *
-     * @param codeEnums
+     * @param code
      */
-    public ResponseVO(CodeEnums codeEnums) {
-        this.code = codeEnums.getCode();
-        this.desc = codeEnums.getDesc();
+    public ResponseVO(Code code) {
+        this.code = code.getCode();
+        this.desc = code.getDesc();
     }
 
 

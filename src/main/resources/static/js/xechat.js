@@ -5,9 +5,8 @@ var stompClient = null;
 function connect(topic) {
     var socket = new SockJS('/xechat');
     stompClient = Stomp.over(socket);
+    config();
     stompClient.connect({}, function (frame) {
-        config();
-        setConnected(true);
         console.log('Connected: ' + frame);
         stompClient.subscribe('/topic/' + topic, function (data) {
             console.log('resp: ' + data);
@@ -20,6 +19,15 @@ function connect(topic) {
             console.log('resp: ' + data);
             showMessage(data.body);
         });
+
+        stompClient.subscribe('/user/' + userId + '/error', function (data) {
+            console.log('resp: ' + data);
+        });
+
+        stompClient.subscribe('/topic/status', function (data) {
+            console.log('resp: ' + data);
+        });
+        setConnected(true);
     });
 }
 
@@ -31,16 +39,18 @@ function config() {
 }
 
 function disconnect() {
+    setConnected(false);
+
     if (stompClient !== null) {
         stompClient.disconnect();
     }
 
-    setConnected(false);
     console.log('Disconnected');
 }
 
 function setConnected(connected) {
     console.log(connected);
+    sendMessage('/status', getUser(connected ? 1 : 0));
 }
 
 function sendMessage(topic, data) {
@@ -74,4 +84,12 @@ function showMessage(data) {
 function showChatRoomMessage(data) {
     var obj = JSON.parse(data).data;
     $('#content').append('<p>来自聊天室消息(' + obj.address + ')' + obj.username + '说：' + obj.message + '</p>');
+}
+
+function getUser(data) {
+    return JSON.stringify({
+        "userId": $('input[name = userId]').val(),
+        "username": '马云',
+        "status": data
+    });
 }

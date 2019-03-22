@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试</title>
+</head>
+<body>
+userId: <input type="text" name="userId"/>
+<button onclick="connect('chatRoom')">连接</button>
+<button onclick="disconnect()">断开</button>
+<br/>
+toUserId: <input type="text" name="toUserId"/>
+
+<div id="content">
+</div>
+<br/>
+<textarea id="message"></textarea>
+<button onclick="sendToUser()">发送到用户</button>
+<button onclick="sendToChatRoom()">发送到聊天室</button>
+
+<script src="js/xechat.js"></script>
+</body>
+</html>

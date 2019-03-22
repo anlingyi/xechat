@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds">
     <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
-    <property name="ROOT_LOG_PATH" value="/var/log/xebchat"/>
+    <property name="ROOT_LOG_PATH" value="/var/log/xechat"/>
     <!-- 控制台输出 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -11,10 +11,10 @@
     </appender>
     <!-- 按照每天生成日志文件 -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${ROOT_LOG_PATH}/xeblog.log</file>
+        <file>${ROOT_LOG_PATH}/xechat.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--日志文件输出的文件名-->
-            <FileNamePattern>${ROOT_LOG_PATH}/xeblog.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>${ROOT_LOG_PATH}/xechat.%d{yyyy-MM-dd}.log</FileNamePattern>
             <!--日志文件保留天数-->
             <MaxHistory>15</MaxHistory>
         </rollingPolicy>

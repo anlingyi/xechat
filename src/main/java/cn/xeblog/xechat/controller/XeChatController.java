@@ -103,7 +103,7 @@ public class XeChatController {
      */
     @MessageMapping(StompConstant.PUB_STATUS)
     @SendTo(StompConstant.SUB_STATUS)
-    public ResponseVO addUser(User user) {
+    public ResponseVO addOrRemoveUser(User user) {
         String userId = user.getUserId();
 
         if (StringUtils.isEmpty(userId)) {
@@ -111,19 +111,19 @@ public class XeChatController {
             return new ResponseVO(CodeEnum.INVALID_TOKEN);
         }
 
-        if (null != userMap.get(userId)) {
-            return null;
-        }
-
         if (user.getStatus() == UserStatusConstant.ONLINE) {
             log.debug("{} -> 上线了", user);
-            // 用户上线
-            userMap.put(userId, user);
+            if (null == userMap.get(userId)) {
+                // 用户上线
+                userMap.put(userId, user);
+            }
         } else {
             log.debug("{} -> 离线了", user);
             // 用户离线
             userMap.remove(userId);
         }
+
+        log.debug("当前在线人数 -> {}", getOnlineCount());
 
         DynamicMsgVo dynamicMsgVo = new DynamicMsgVo();
         dynamicMsgVo.setUser(user);

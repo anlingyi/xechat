@@ -1,0 +1,274 @@
+@CHARSET "UTF-8";
+body {
+    background-color: #f2f2f2;
+    font-family: 'Microsoft Yahei', 'Arial';
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    list-style: none;
+}
+
+.header {
+    padding: 1em 0;
+    width: 100%;
+    display: inline-block;
+}
+
+.header a, .ui-link {
+    color: #666;
+}
+
+.header a:hover {
+    text-decoration: none;
+}
+
+.header .glyphicon {
+    font-size: 1.4em;
+    cursor: pointer;
+}
+
+.user_box {
+    width: 100%;
+    padding: 2.2em 0;
+}
+
+.avatar {
+    border: 2px solid #999;
+    border-radius: 50%;
+    padding: .8em;
+}
+
+.username {
+    display: inline-block;
+    width: 100%;
+    padding: 10px 0 20px;
+    font-size: 1.2em;
+    color: #999;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.menu {
+    border-bottom: 1px solid #e6e6e6;
+    box-shadow: 0 0 1px #fff;
+}
+
+.menu a {
+    color: #333;
+    padding: 1em 0;
+    font-size: 1em;
+    display: block;
+}
+
+.menu a:hover {
+    text-decoration: none;
+    background-color: #ffffff;
+}
+
+.ui-loader h1 {
+    display: none;
+}
+
+.avatar_ {
+    border-radius: 50%;
+    margin-top: 15px;
+}
+
+.content-reply-box {
+    width: 100%;
+    overflow: hidden;
+}
+
+.content-reply-box li {
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 2em;
+}
+
+.content-reply-box li.odd .user {
+    float: left;
+    margin-right: 10px;
+}
+
+.content-reply-box li.even .user {
+    float: right;
+    margin-left: 10px;
+}
+
+.content-reply-box li.odd .reply-content-box {
+    margin-left: 60px;
+}
+
+.content-reply-box li.even .reply-content-box {
+    margin-right: 60px;
+}
+
+.user-name {
+    color: #999;
+    margin-top: 5px;
+    display: block;
+    text-align: center;
+    width: 50px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.reply-time {
+    color: #e1912d;
+    font-size: .85em;
+    display: inline-block;
+    width: 100%;
+}
+
+.content-reply-box li.odd .reply-time {
+    text-align: left;
+}
+
+.content-reply-box li.even .reply-time {
+    text-align: right;
+}
+
+.reply-content {
+    border: 1px solid #fcfcfc;
+    padding: .6em;
+    background-color: #fcfcfc;
+    border-radius: 4px;
+    box-shadow: 0 0 5px #ccc;
+}
+
+.content-reply-box li.odd .arrow {
+    width: 0;
+    height: 0;
+    line-height: 0;
+    font-size: 0;
+    border-color: transparent #fff transparent transparent;
+    border-width: 6px;
+    border-style: dashed solid dashed dashed;
+    display: block;
+    position: absolute;
+    top: 8px;
+    left: -12px;
+    z-index: 999;
+}
+
+.content-reply-box li.even .arrow {
+    width: 0;
+    height: 0;
+    line-height: 0;
+    font-size: 0;
+    border-color: transparent transparent transparent #fff;
+    border-width: 6px;
+    border-style: dashed dashed dashed solid;
+    display: block;
+    position: absolute;
+    top: 8px;
+    right: -12px;
+    z-index: 999;
+}
+
+.operating {
+    border-top: 1px solid #ccc;
+}
+
+.operating li {
+    border-right: 1px solid #ccc;
+}
+
+.operating a {
+    padding: 0.85em 0;
+    display: inline-block;
+    width: 100%;
+}
+
+.pr {
+    position: relative;
+}
+
+.oh {
+    overflow: hidden;
+}
+
+.mg10 {
+    margin: 10px 0;
+}
+
+.linear-g {
+    background: -moz-linear-gradient(top, #fdfdfd, #f6f6f6);
+    background: -webkit-gradient(linear, top, from(#fdfdfd), to(#f6f6f6));
+    background: -webkit-linear-gradient(top, #fdfdfd, #f6f6f6);
+    background: -o-linear-gradient(top, #fdfdfd, #f6f6f6);
+    box-shadow: 0 0 5px #ccc;
+}
+
+#show_content {
+    width: 100%;
+    height: 340px;
+    overflow-y: auto;
+}
+
+.btn_1 {
+    float: right;
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+}
+
+.send_div {
+    width: 100%;
+}
+
+.div_left {
+    width: 100%;
+    height: 80px;
+    float: left;
+}
+
+.div_left textarea {
+    width: 100%;
+    max-height: 80px;
+    min-height: 80px;
+    border: 0;
+    font-size: 14px;
+    color: #666;
+    resize: none;
+}
+
+.fixed_ {
+    position: fixed;
+    z-index: 99999;
+}
+
+.join_li {
+    font-size: 13px;
+    height: 25px;
+    line-height: 25px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+}
+
+.login_fm {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.head_div {
+    width: 50px;
+    height: 44px;
+    float: left;
+    margin-bottom: 20px;
+}
+
+#showHead {
+    width: 100%;
+    float: left;
+    margin-bottom: 20px;
+}

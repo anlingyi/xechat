@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xechat</title>
+    <link rel="stylesheet" type="text/css"
+          href="./css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+</head>
+
+<body>
+<div id="login">
+    <center><h3>欢迎您来到<a href="http://www.xeblog.cn" target="_blank">小毅博客</a>聊天室！</h3></center>
+    <h4 align="right">———&nbsp;Where are you from?</h4>
+    <div class="login_fm">
+        <h4>给自己取个帅气点的网名吧！</h4>
+        <form>
+            <input type="text" id="username" placeholder="请在此处输入网名！" class="form-control"><br>
+            <h4>选择一个自己喜欢的头像吧！</h4>
+            <div id="showHead"></div>
+            <input type="button" value="ok，进入聊天室" id="joinChat" class="btn btn-primary btn-lg">
+        </form>
+    </div>
+</div>
+<div data-role="page" id="showChat" style="display: none">
+    <div class="header linear-g fixed_">
+        <a href="#panel-left" data-iconpos="notext"
+           class="col-xs-2 text-right"> </a> <a class="text-center col-xs-8"
+                                                target="_blank">小毅博客聊天室（<font color="orange" id="online_num"><img
+            src="./images/loader.gif" width="15" height="15"></font>）</a>
+    </div>
+    <br>
+    <div class="header"></div>
+    <div data-role="content" class="container" role="main">
+        <div>
+            <ul class="content-reply-box mg10" id="show_content">
+            </ul>
+        </div>
+    </div>
+    <div class="send_div">
+        <div class="div_left linear-g">
+            <textarea rows="30" maxlength="200" placeholder="请在此处输入要发送的信息！" class="form-control"
+                      id="content"></textarea>
+        </div>
+        <br> <a href="javascript:void(0)" id="send_btn" onclick="sendToChatRoom()">
+        <div class="col-xs-2 linear-g btn_1">
+            <span class="glyphicon glyphicon-send"></span> &nbsp;发送（Enter）
+        </div>
+    </a>
+    </div>
+    <div class="text-center" style="line-height: 30px">
+        <a href="http://www.xeblog.cn/" target="_blank">&copy;&nbsp;小毅博客</a>
+    </div>
+</div>
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+
+<script type="text/javascript" src="./js/xechat.js"></script>
+<script>
+    $(function () {
+        $('#joinChat').bind('click', connect);
+    });
+</script>
+</body>
+</html>

@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.security.Principal;
 
 /**
  * 用户信息
@@ -15,7 +16,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @ToString
-public class User implements Serializable {
+public class User implements Principal, Serializable {
 
     private static final long serialVersionUID = 5114506546129512029L;
 
@@ -39,4 +40,9 @@ public class User implements Serializable {
      * 用户状态
      */
     private int status;
+
+    @Override
+    public String getName() {
+        return userId;
+    }
 }

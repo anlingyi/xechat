@@ -41,10 +41,6 @@ public interface StompConstant {
      */
     String SUB_ERROR = "/error";
     /**
-     * 用户上下线状态消息发布地址
-     */
-    String PUB_STATUS = "/status";
-    /**
      * 用户上下线状态消息订阅地址
      */
     String SUB_STATUS = "/topic/status";

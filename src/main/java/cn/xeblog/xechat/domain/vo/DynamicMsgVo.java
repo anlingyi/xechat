@@ -1,5 +1,7 @@
 package cn.xeblog.xechat.domain.vo;
 
+import cn.xeblog.xechat.domain.mo.User;
+import cn.xeblog.xechat.enums.MessageTypeEnum;
 import lombok.*;
 
 import java.io.Serializable;
@@ -13,6 +15,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class DynamicMsgVo extends MessageVO implements Serializable {
 
     private static final long serialVersionUID = 6784139265883590057L;
@@ -21,4 +24,9 @@ public class DynamicMsgVo extends MessageVO implements Serializable {
      * 在线人数
      */
     private int onlineCount;
+
+    public DynamicMsgVo(User user, String message, MessageTypeEnum type, int onlineCount) {
+        super(user, message, type);
+        this.onlineCount = onlineCount;
+    }
 }

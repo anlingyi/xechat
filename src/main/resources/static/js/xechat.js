@@ -2,9 +2,25 @@ document.write('<script src="js/config.js"></script>');
 
 // 头像数量
 var head_num = 9;
-// 聊天室用户id，存储在cookie中的key
-var cr_userId = 'cr_userId';
+// 用户id
+var uid = null;
 var stompClient = null;
+
+// 页面加载完成后
+window.onload = function () {
+    // 初始化头像单选框
+    showHeadPortrait();
+    // 页面加载完成监听回车事件
+    document.getElementById("content").addEventListener("keydown", function (e) {
+        if (e.keyCode != 13) return;
+        e.preventDefault();
+        // 发送信息
+        $("#send_btn").click();
+    });
+}
+
+// 监听窗口关闭事件，当窗口关闭时，主动去关闭stomp连接
+window.onbeforeunload = disconnect;
 
 /**
  * 连接服务器，订阅相关地址
@@ -12,29 +28,38 @@ var stompClient = null;
 function connect() {
     var socket = new SockJS('/xechat');
     stompClient = Stomp.over(socket);
+    // 配置stomp
     config();
-    sub(setUserId(cr_userId));
+    // 订阅地址
+    sub();
 }
 
 /**
  * 订阅地址
  */
-function sub(uid) {
-    stompClient.connect({}, function (frame) {
-        console.log('Connected: ' + frame);
+function sub() {
+    stompClient.connect(createUser(), function (frame) {
+        console.log('Connected: ', frame);
+        uid = frame.headers['user-name'];
+        console.log('uid -> ', uid);
+
+        // 聊天室订阅
         stompClient.subscribe('/topic/chatRoom', function (data) {
             showUserMsg(getData(data.body), false);
         });
 
+        // 本地订阅
         stompClient.subscribe('/user/' + uid + '/chat', function (data) {
             console.log('resp: ' + data);
             showMessage(data.body);
         });
 
+        // 错误信息订阅
         stompClient.subscribe('/user/' + uid + '/error', function (data) {
             console.log('resp: ' + data);
         });
 
+        // 聊天室动态订阅
         stompClient.subscribe('/topic/status', function (data) {
             var obj = getData(data.body);
             showOnlineNum(obj.onlineCount);
@@ -46,6 +71,11 @@ function sub(uid) {
 
 }
 
+/**
+ * 解析响应数据
+ * @param data
+ * @returns {*}
+ */
 function getData(data) {
     var obj = JSON.parse(data);
     codeMapping(obj);
@@ -78,7 +108,6 @@ function disconnect() {
  * @param connected true连接成功，false连接失败
  */
 function setConnected(connected) {
-    sendMessage('/status', {}, createUser(connected ? 1 : 0));
     showChatRoom(connected);
 }
 
@@ -92,47 +121,9 @@ function sendMessage(pub, header, data) {
     stompClient.send(pub, header, data);
 }
 
-function sendToUser() {
-    var data = JSON.stringify({
-        "receiver": $('input[name = toUserId]').val(),
-        "sender": $('input[name = userId]').val(),
-        "message": $('#message').val()
-    });
-    $('#content').append('<p>你说：' + $('#message').val() + '</p>');
-    sendMessage('/chat', {}, data);
-}
-
-function showMessage(data) {
-    var obj = JSON.parse(data);
-    $('#content').append('<p>好友' + obj.sender + '说：' + obj.message + '</p>');
-}
-
-function showChatRoomMessage(data) {
-    var obj = JSON.parse(data).data;
-    $('#content').append('<p>来自聊天室消息(' + obj.address + ')' + obj.username + '说：' + obj.message + '</p>');
-}
-
-function getUser(data) {
-    return JSON.stringify({
-        "userId": $('input[name = userId]').val(),
-        "username": '马云',
-        "status": data
-    });
-}
-
-//页面加载完成监听回车事件
-$(function () {
-    document.getElementById("content").addEventListener("keydown", function (e) {
-        if (e.keyCode != 13) return;
-        e.preventDefault();
-        //发送信息
-        $("#send_btn").click();
-    });
-    //初始化头像单选框
-    showHeadPortrait();
-});
-
-//生成头像单选
+/**
+ * 生成头像列表
+ */
 function showHeadPortrait() {
     var ck = "checked";
     for (var i = 1; i < head_num; i++) {
@@ -154,8 +145,6 @@ function sendToChatRoom() {
         return;
     }
     var data = JSON.stringify({
-        "receiver": '',
-        "sender": Cookies.get(cr_userId),
         "message": htmlEncode(content)
     });
     sendMessage('/chatRoom', {}, data);
@@ -177,43 +166,6 @@ function codeMapping(date) {
             alert(date.desc);
             break;
     }
-}
-
-/**
- * 设置用户id
- * @param key
- * @returns {*}
- */
-function setUserId(key) {
-    var uid = Cookies.get(key);
-
-    if (uid !== undefined) {
-        console.log('你已登陆!');
-    } else {
-        console.log('创建uid!');
-        uid = createUid();
-    }
-
-    console.log('uid -> ', uid);
-    Cookies.set(key, uid);
-
-    return uid;
-}
-
-/**
- * 创建用户id
- */
-function createUid() {
-    // guid
-    return (s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4() + "-" + s4() + s4() + s4());
-}
-
-/**
- * 生成四位随机字符
- * @returns {string}
- */
-function s4() {
-    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 }
 
 /**
@@ -251,10 +203,9 @@ function showChatRoom(isShow) {
 
 /**
  * 创建用户
- * @param status
  * @returns {string}
  */
-function createUser(status) {
+function createUser() {
     var username = $("#username").val();
     var option = $("input[name='headPortrait']:checked").val();
     var headPortrait = './images/' + (option > head_num || option < 0 ? 0 : option) + '.jpg';
@@ -265,20 +216,11 @@ function createUser(status) {
         username = '匿名';
     }
 
-    var data = JSON.stringify({
-        'userId': Cookies.get(cr_userId),
+    return {
         'username': username,
-        'avatar': headPortrait,
-        'status': status
-    });
-
-    return data;
+        'avatar': headPortrait
+    };
 }
-
-// 监听窗口关闭事件，当窗口关闭时，主动去关闭stomp连接
-window.onbeforeunload = function () {
-    disconnect();
-};
 
 /**
  * 显示系统消息
@@ -304,7 +246,7 @@ function showSystemMsg(data) {
 function showUserMsg(data, isMe) {
     var user = data.user;
 
-    var style_css = user.userId === Cookies.get(cr_userId) ? 'even' : 'odd';
+    var style_css = user.userId === uid ? 'even' : 'odd';
     var li = '<li class=' + style_css + '>';
     var a = '<a class="user" href="#">';
     var img = '<img class="img-responsive avatar_" src=' + user.avatar + '\>';

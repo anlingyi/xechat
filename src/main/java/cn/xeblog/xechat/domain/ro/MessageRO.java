@@ -20,7 +20,7 @@ public class MessageRO implements Serializable {
     private static final long serialVersionUID = 3544216886850149310L;
 
     /**
-     * 接受者
+     * 接收者
      */
     private String receiver;
     /**

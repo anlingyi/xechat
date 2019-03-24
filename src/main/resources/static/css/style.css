@@ -86,7 +86,7 @@ li {
 .content-reply-box li {
     width: 100%;
     overflow: hidden;
-    margin-bottom: 2em;
+    margin-bottom: 0.5em;
 }
 
 .content-reply-box li.odd .user {

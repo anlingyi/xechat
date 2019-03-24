@@ -15,6 +15,8 @@ import java.io.Serializable;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class MessageVO implements Serializable {
 
     private static final long serialVersionUID = -1455469852669257711L;

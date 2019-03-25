@@ -11,6 +11,10 @@ import cn.xeblog.xechat.enums.inter.Code;
 public enum CodeEnum implements Code {
 
     /**
+     * 消息已过期
+     */
+    MESSAGE_HAS_EXPIRED(1001, "消息已过期，不能撤回！"),
+    /**
      * 服务器内部错误
      */
     INTERNAL_SERVER_ERROR(500, "网络异常！"),

@@ -8,5 +8,6 @@ package cn.xeblog.xechat.enums;
  */
 public enum MessageTypeEnum {
     SYSTEM,
-    USER
+    USER,
+    REVOKE
 }

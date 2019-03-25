@@ -45,25 +45,24 @@ function sub() {
 
         // 聊天室订阅
         stompClient.subscribe('/topic/chatRoom', function (data) {
-            showUserMsg(getData(data.body), false);
+            handleMessage(getData(data.body));
         });
 
         // 本地订阅
         stompClient.subscribe('/user/' + uid + '/chat', function (data) {
             console.log('resp: ' + data);
-            showMessage(data.body);
         });
 
         // 错误信息订阅
         stompClient.subscribe('/user/' + uid + '/error', function (data) {
-            console.log('resp: ' + data);
+            getData(data.body);
         });
 
         // 聊天室动态订阅
         stompClient.subscribe('/topic/status', function (data) {
             var obj = getData(data.body);
             showOnlineNum(obj.onlineCount);
-            showSystemMsg(obj);
+            handleSystemMsg(obj);
         });
 
         setConnected(true);
@@ -223,10 +222,10 @@ function createUser() {
 }
 
 /**
- * 显示系统消息
+ * 处理系统消息
  * @param message
  */
-function showSystemMsg(data) {
+function handleSystemMsg(data) {
     var message = '系统提示：';
     var username = data.user.username;
     if (data.user.status === 1) {
@@ -235,24 +234,25 @@ function showSystemMsg(data) {
         message += username + '离开了聊天室！';
     }
 
-    var li = '<li class="text-center join_li" id="join_message">' + message + '</li>';
-    $("#show_content").append(li);
+    showSystemMsg(message);
 }
 
 /**
  * 显示用户消息
  * @param data
  */
-function showUserMsg(data, isMe) {
+function showUserMsg(data) {
     var user = data.user;
+    var isMe = user.userId === uid;
+    var style_css = isMe ? 'even' : 'odd';
+    var event = isMe ? 'ondblclick=revokeMessage("' + data.messageId + '")' : '';
 
-    var style_css = user.userId === uid ? 'even' : 'odd';
-    var li = '<li class=' + style_css + '>';
+    var li = '<li class=' + style_css + ' id=' + data.messageId + '>';
     var a = '<a class="user" href="#">';
     var img = '<img class="img-responsive avatar_" src=' + user.avatar + '\>';
     var span = '<span class="user-name">' + user.username + '</span></a>';
-    var div = '<div class="reply-content-box"><span class="reply-time">' + data.time + '&nbsp;From:' + user.address + '</span>';
-    var div2 = '<div class="reply-content pr"><span class="arrow">&nbsp;</span>' + htmlEncode(data.message) + '</div></div></li>';
+    var div = '<div class="reply-content-box"><span class="reply-time">' + data.sendTime + '&nbsp;From:' + user.address + '</span>';
+    var div2 = '<div class="reply-content pr" ' + event + '><span class="arrow">&nbsp;</span>' + htmlEncode(data.message) + '</div></div></li>';
     var html = li + a + img + span + div + div2;
     $("#show_content").append(html);
     jumpToLow();
@@ -263,4 +263,54 @@ function showUserMsg(data, isMe) {
  */
 function jumpToLow() {
     $("ul").scrollTop($("ul")[0].scrollHeight);
+}
+
+/**
+ * 处理消息
+ * @param data
+ */
+function handleMessage(data) {
+    switch (data.type) {
+        case 'USER':
+            showUserMsg(data);
+            break;
+        case 'SYSTEM':
+            break;
+        case 'REVOKE':
+            showRevokeMessage(data);
+            break;
+        default:
+            break;
+    }
+}
+
+/**
+ * 显示撤回消息信息
+ * @param data
+ */
+function showRevokeMessage(data) {
+    document.getElementById(data.revokeMessageId).remove();
+    showSystemMsg(data.user.username + '撤回了一条消息！');
+}
+
+/**
+ * 显示系统消息
+ * @param message
+ */
+function showSystemMsg(message) {
+    var li = '<li class="text-center join_li" id="join_message">' + message + '</li>';
+    $("#show_content").append(li);
+}
+
+
+/**
+ * 撤消消息
+ * @param messageId
+ */
+function revokeMessage(messageId) {
+    if (messageId === '' || messageId === undefined || !confirm('确定撤回这条消息吗？')) {
+        return;
+    }
+
+    sendMessage('/chatRoom/revoke', {}, messageId);
 }

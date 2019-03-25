@@ -1,12 +1,14 @@
 package cn.xeblog.xechat.listener;
 
 import cn.xeblog.xechat.cache.UserCache;
+import cn.xeblog.xechat.constant.DateConstant;
 import cn.xeblog.xechat.constant.StompConstant;
 import cn.xeblog.xechat.constant.UserStatusConstant;
 import cn.xeblog.xechat.domain.mo.User;
 import cn.xeblog.xechat.domain.vo.DynamicMsgVo;
 import cn.xeblog.xechat.domain.vo.ResponseVO;
 import cn.xeblog.xechat.enums.MessageTypeEnum;
+import cn.xeblog.xechat.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -85,6 +87,13 @@ public class WebSocketEventListener {
         if (StompConstant.SUB_STATUS.equals(stompHeaderAccessor.getFirstNativeHeader(StompHeaderAccessor
                 .STOMP_DESTINATION_HEADER))) {
             if (user != null) {
+                try {
+                    // 延迟100ms，防止客户端来不及接收上线消息
+                    Thread.sleep(100L);
+                } catch (InterruptedException e) {
+                    log.error("中断异常，error -> {}", e);
+                }
+
                 // 广播上线消息
                 sendMessage(buildResponse(user));
                 log.debug("广播上线消息 -> {}", user);
@@ -100,7 +109,13 @@ public class WebSocketEventListener {
      * @return
      */
     private ResponseVO buildResponse(User user) {
-        return new ResponseVO(new DynamicMsgVo(user, null, MessageTypeEnum.SYSTEM, UserCache.getOnlineCount()));
+        DynamicMsgVo dynamicMsgVo = new DynamicMsgVo();
+        dynamicMsgVo.setSendTime(DateUtils.getDate(DateConstant.SEND_TIME_FORMAT));
+        dynamicMsgVo.setType(MessageTypeEnum.SYSTEM);
+        dynamicMsgVo.setUser(user);
+        dynamicMsgVo.setOnlineCount(UserCache.getOnlineCount());
+
+        return new ResponseVO(dynamicMsgVo);
     }
 
     /**

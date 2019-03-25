@@ -44,4 +44,8 @@ public interface StompConstant {
      * 用户上下线状态消息订阅地址
      */
     String SUB_STATUS = "/topic/status";
+    /**
+     * 聊天室消息撤消
+     */
+    String PUB_CHAT_ROOM_REVOKE = "/chatRoom/revoke";
 }

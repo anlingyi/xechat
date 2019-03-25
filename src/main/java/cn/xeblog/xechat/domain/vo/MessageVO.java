@@ -30,8 +30,19 @@ public class MessageVO implements Serializable {
      */
     private String message;
     /**
-     * 消息类型 1.系统 2.用户
+     * 消息类型
      */
     private MessageTypeEnum type;
+    /**
+     * 消息id
+     */
+    private String messageId;
+    /**
+     * 发送时间
+     */
+    private String sendTime;
 
+    public String getMessageId() {
+        return user.getUserId() + ':' + System.currentTimeMillis();
+    }
 }

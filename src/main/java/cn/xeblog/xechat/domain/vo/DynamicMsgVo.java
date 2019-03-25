@@ -1,7 +1,5 @@
 package cn.xeblog.xechat.domain.vo;
 
-import cn.xeblog.xechat.domain.mo.User;
-import cn.xeblog.xechat.enums.MessageTypeEnum;
 import lombok.*;
 
 import java.io.Serializable;
@@ -25,8 +23,4 @@ public class DynamicMsgVo extends MessageVO implements Serializable {
      */
     private int onlineCount;
 
-    public DynamicMsgVo(User user, String message, MessageTypeEnum type, int onlineCount) {
-        super(user, message, type);
-        this.onlineCount = onlineCount;
-    }
 }

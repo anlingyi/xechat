@@ -52,6 +52,7 @@ public class XeChatController {
         messageVO.setUser(user);
         messageVO.setMessage(messageRO.getMessage());
         messageVO.setType(MessageTypeEnum.USER);
+        messageVO.setImage(messageRO.getImage());
 
         return new ResponseVO(messageVO);
     }

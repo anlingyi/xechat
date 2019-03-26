@@ -15,7 +15,7 @@ window.onload = function () {
         if (e.keyCode != 13) return;
         e.preventDefault();
         // 发送信息
-        $("#send_btn").click();
+        sendToChatRoom();
     });
 }
 
@@ -147,7 +147,8 @@ function sendToChatRoom() {
         "message": htmlEncode(content)
     });
     sendMessage('/chatRoom', {}, data);
-    $("#content").val("");
+    $('#content').val('');
+    changeBtn();
 }
 
 /**
@@ -247,13 +248,16 @@ function showUserMsg(data) {
     var style_css = isMe ? 'even' : 'odd';
     var event = isMe ? 'ondblclick=revokeMessage("' + data.messageId + '")' : '';
 
+    var showMessage = data.message == null ? '' : htmlEncode(data.message);
+    var showImage = data.image == null ? '' : '<div class="show_image"><img src="' + data.image + '"/></div>';
     var li = '<li class=' + style_css + ' id=' + data.messageId + '>';
     var a = '<a class="user" href="#">';
-    var img = '<img class="img-responsive avatar_" src=' + user.avatar + '\>';
+    var avatar = '<img class="img-responsive avatar_" src=' + user.avatar + '\>';
     var span = '<span class="user-name">' + user.username + '</span></a>';
     var div = '<div class="reply-content-box"><span class="reply-time">' + data.sendTime + '&nbsp;From:' + user.address + '</span>';
-    var div2 = '<div class="reply-content pr" ' + event + '><span class="arrow">&nbsp;</span>' + htmlEncode(data.message) + '</div></div></li>';
-    var html = li + a + img + span + div + div2;
+    var div2 = '<div class="reply-content pr" ' + event + '><span class="arrow">&nbsp;</span>' + showMessage + showImage + '</div></div></li>';
+
+    var html = li + a + avatar + span + div + div2;
     $("#show_content").append(html);
     jumpToLow();
 }
@@ -313,4 +317,74 @@ function revokeMessage(messageId) {
     }
 
     sendMessage('/chatRoom/revoke', {}, messageId);
+}
+
+/**
+ * 控制按钮显示
+ */
+function changeBtn() {
+    // 如果输入的内容不为空，则展示发送按钮，否则展示上传图片按钮
+    if ($('#content').val().trim() != '') {
+        $('#send_btn').show();
+        $('#picture_btn').hide();
+    } else {
+        $('#picture_btn').show();
+        $('#send_btn').hide();
+    }
+}
+
+/**
+ * 发送图片
+ */
+function sendImage() {
+    var image = $("#file").val();
+    var filename = image.replace(/.*(\/|\\)/, "");
+    var fileExt = (/[.]/.exec(filename)) ? /[^.]+$/.exec(filename.toUpperCase()) : '';
+
+    var file = $('#file').get(0).files[0];
+    var fileSize = file.size;
+    var mb = 30;
+    var maxSize = mb * 1024 * 1024;
+
+    if (fileExt != 'PNG' && fileExt != 'GIF' && fileExt != 'JPG' && fileExt != 'JPEG' && fileExt != 'BMP') {
+        alert('发送失败，图片格式有误！');
+        return;
+    } else if (parseInt(fileSize) > parseInt(maxSize)) {
+        alert('上传的图片不能超过' + mb + 'MB');
+        return;
+    } else {
+        var data = new FormData();
+        data.append('file', file);
+        $.ajax({
+            url: "/api/upload/image",
+            type: 'POST',
+            data: data,
+            dataType: 'JSON',
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                codeMapping(data);
+                var rep = data.data;
+                sendImageToChatRoom(rep.path);
+            }
+        });
+    }
+}
+
+/**
+ * 选择文件
+ */
+function selectFile() {
+    $('#file').click();
+}
+
+/**
+ * 发送图片到聊天室
+ */
+function sendImageToChatRoom(image) {
+    var data = JSON.stringify({
+        "image": image
+    });
+    sendMessage('/chatRoom', {}, data);
 }

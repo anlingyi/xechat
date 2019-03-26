@@ -24,12 +24,12 @@ public class MessageRO implements Serializable {
      */
     private String receiver;
     /**
-     * 发送者
-     */
-    private String sender;
-    /**
      * 消息
      */
     private String message;
+    /**
+     * 图片
+     */
+    private String image;
 
 }

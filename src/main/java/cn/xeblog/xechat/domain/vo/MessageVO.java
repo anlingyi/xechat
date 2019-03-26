@@ -30,6 +30,10 @@ public class MessageVO implements Serializable {
      */
     private String message;
     /**
+     * 图片
+     */
+    private String image;
+    /**
      * 消息类型
      */
     private MessageTypeEnum type;

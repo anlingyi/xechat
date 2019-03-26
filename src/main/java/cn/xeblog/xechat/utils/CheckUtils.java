@@ -39,4 +39,15 @@ public class CheckUtils {
             throw new ErrorCodeException(CodeEnum.MESSAGE_HAS_EXPIRED);
         }
     }
+
+    /**
+     * 判断是否是图片
+     *
+     * @param type
+     * @return true是图片 false不是图片
+     */
+    public static boolean isImage(String type) {
+        return ".jpg".equals(type) || ".jpeg".equals(type) || ".png".equals(type) || ".bmp".equals(type)
+                || ".gif".equals(type);
+    }
 }

@@ -11,6 +11,10 @@ import cn.xeblog.xechat.enums.inter.Code;
 public enum CodeEnum implements Code {
 
     /**
+     * 上传的文件不是图片
+     */
+    UPLOADED_FILE_IS_NOT_AN_IMAGE(1002, "上传的文件不是图片!"),
+    /**
      * 消息已过期
      */
     MESSAGE_HAS_EXPIRED(1001, "消息已过期，不能撤回！"),

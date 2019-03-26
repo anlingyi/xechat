@@ -31,27 +31,26 @@
                                                 target="_blank">小毅博客聊天室（<font color="orange" id="online_num"><img
             src="./images/loader.gif" width="15" height="15"></font>）</a>
     </div>
-    <br>
     <div class="header"></div>
-    <div data-role="content" class="container" role="main">
+    <div data-role="content" class="container content" role="main">
         <div>
             <ul class="content-reply-box mg10" id="show_content">
             </ul>
         </div>
     </div>
     <div class="send_div">
-        <div class="div_left linear-g">
-            <textarea rows="30" maxlength="200" placeholder="请在此处输入要发送的信息！" class="form-control"
-                      id="content"></textarea>
+        <div class="input-group div_left">
+            <textarea rows="20" maxlength="200" placeholder="请在此处输入要发送的信息！" class="form-control"
+                      id="content" onkeyup="changeBtn()"></textarea>
+            <span id="picture_btn" onclick="selectFile()" class="input-group-addon linear-g right_btn glyphicon
+             glyphicon-picture"></span>
+            <span id="send_btn" onclick="sendToChatRoom()" class="input-group-addon linear-g right_btn glyphicon
+             glyphicon-send" style="display: none;"></span>
         </div>
-        <br> <a href="javascript:void(0)" id="send_btn" onclick="sendToChatRoom()">
-        <div class="col-xs-2 linear-g btn_1">
-            <span class="glyphicon glyphicon-send"></span> &nbsp;发送（Enter）
-        </div>
-    </a>
     </div>
+    <input type="file" style="display: none" id="file" onchange="sendImage()"/>
     <div class="text-center" style="line-height: 30px">
-        <a href="http://www.xeblog.cn/" target="_blank">&copy;&nbsp;小毅博客</a>
+        <a href="https://www.xeblog.cn/" target="_blank">&copy;&nbsp;小毅博客</a>
     </div>
 </div>
 <script type="text/javascript" src="./js/xechat.js"></script>

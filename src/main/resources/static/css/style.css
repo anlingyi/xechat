@@ -296,3 +296,25 @@ li {
 .reply-content .show_image {
     text-align: center;
 }
+
+.user-list {
+    position: absolute;
+    z-index: 1000;
+    left: 15px;
+}
+
+.avatar_list {
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    float: left;
+}
+
+.name_list {
+    width: 100px;
+    line-height: 30px;
+    margin-left: 35px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

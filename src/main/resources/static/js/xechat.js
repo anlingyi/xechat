@@ -63,6 +63,7 @@ function sub() {
             var obj = getData(data.body);
             showOnlineNum(obj.onlineCount);
             handleSystemMsg(obj);
+            showUserList(obj.onlineUserList);
         });
 
         setConnected(true);
@@ -143,6 +144,7 @@ function sendToChatRoom() {
     if (content.trim().length < 1) {
         return;
     }
+
     var data = JSON.stringify({
         "message": htmlEncode(content)
     });
@@ -266,7 +268,7 @@ function showUserMsg(data) {
  * 跳到聊天界面最底下
  */
 function jumpToLow() {
-    $("ul").scrollTop($("ul")[0].scrollHeight);
+    $("ul").scrollTop($("ul")[1].scrollHeight);
 }
 
 /**
@@ -387,4 +389,17 @@ function sendImageToChatRoom(image) {
         "image": image
     });
     sendMessage('/chatRoom', {}, data);
+}
+
+/**
+ * 用户列表
+ * @param data
+ */
+function showUserList(data) {
+    $('#onlineUserList').html('');
+    for (var i = 0; i < data.length; i++) {
+        var obj = data[i];
+        $('#onlineUserList').append('<li id=' + obj.userId + '><a href="#"><div><img class="img-responsive avatar_list"' +
+            ' src=' + obj.avatar + '><div class="name_list">' + obj.username + '</div></div></a></li>');
+    }
 }

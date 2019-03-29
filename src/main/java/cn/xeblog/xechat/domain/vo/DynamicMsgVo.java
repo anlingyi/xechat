@@ -1,8 +1,10 @@
 package cn.xeblog.xechat.domain.vo;
 
+import cn.xeblog.xechat.domain.mo.User;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 聊天室动态消息
@@ -22,5 +24,10 @@ public class DynamicMsgVo extends MessageVO implements Serializable {
      * 在线人数
      */
     private int onlineCount;
+
+    /**
+     * 在线用户列表
+     */
+    private List<User> onlineUserList;
 
 }

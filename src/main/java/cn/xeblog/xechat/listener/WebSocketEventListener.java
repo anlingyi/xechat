@@ -114,6 +114,7 @@ public class WebSocketEventListener {
         dynamicMsgVo.setType(MessageTypeEnum.SYSTEM);
         dynamicMsgVo.setUser(user);
         dynamicMsgVo.setOnlineCount(UserCache.getOnlineCount());
+        dynamicMsgVo.setOnlineUserList(UserCache.listUser());
 
         return new ResponseVO(dynamicMsgVo);
     }

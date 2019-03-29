@@ -2,6 +2,8 @@ package cn.xeblog.xechat.cache;
 
 import cn.xeblog.xechat.domain.mo.User;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -57,6 +59,15 @@ public class UserCache {
      */
     public static int getOnlineCount() {
         return userMap.size();
+    }
+
+    /**
+     * 获取所有的在线用户
+     *
+     * @return
+     */
+    public static List<User> listUser() {
+        return new ArrayList<>(userMap.values());
     }
 
 }

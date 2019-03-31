@@ -75,6 +75,8 @@ li {
 .avatar_ {
     border-radius: 50%;
     margin-top: 15px;
+    width: 44px;
+    height: 44px;
 }
 
 .content-reply-box {
@@ -319,7 +321,50 @@ li {
     white-space: nowrap;
 }
 
-.logout {
+.exit {
     position: absolute;
     right: 15px;
+}
+
+.login_avatar {
+    cursor: pointer;
+}
+
+.login_avatar img {
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    box-shadow: 0 0 5px #999;
+}
+
+.avatar_list_div {
+    top: 100%;
+    left: 50%;
+    height: 300px;
+    overflow-y: scroll;
+}
+
+.avatar_list_div img {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+}
+
+.avatar_list_div img:hover {
+    border: 1px solid #ef4e4a;
+}
+
+#username {
+    width: 180px;
+    margin: 10px auto;
+}
+
+#login {
+    height: 380px;
+    padding-top: 30px;
+}
+
+.login-name {
+    margin: 10px;
+    font-size: 16px;
 }

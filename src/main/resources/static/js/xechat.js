@@ -1,15 +1,14 @@
 document.write('<script src="js/config.js"></script>');
 
 // 头像数量
-var head_num = 9;
+var head_num = 50;
 // 用户id
 var uid = null;
 var stompClient = null;
 
 // 页面加载完成后
 window.onload = function () {
-    // 初始化头像单选框
-    showHeadPortrait();
+    init();
     // 页面加载完成监听回车事件
     document.getElementById("content").addEventListener("keydown", function (e) {
         if (e.keyCode != 13) return;
@@ -38,8 +37,9 @@ function connect() {
  * 订阅地址
  */
 function sub() {
-    stompClient.connect(createUser(), function (frame) {
-        console.log('Connected: ', frame);
+    var user = createUser();
+    stompClient.connect(user, function (frame) {
+        cacheUser(user);
         uid = frame.headers['user-name'];
         console.log('uid -> ', uid);
 
@@ -102,7 +102,7 @@ function disconnect() {
     if (stompClient !== null) {
         setConnected(false);
         stompClient.disconnect();
-        window.location.reload();
+        refresh();
     }
 }
 
@@ -128,13 +128,12 @@ function sendMessage(pub, header, data) {
  * 生成头像列表
  */
 function showHeadPortrait() {
-    var ck = "checked";
-    for (var i = 1; i < head_num; i++) {
-        if (i > 1) {
-            ck = '';
-        }
-        $("#showHead").append("<div class='head_div'><img src='./images/" + i + ".jpg' width='44' height='44'><input type='radio' value='" + i + "' name='headPortrait' " + ck + "></div>");
+    for (var i = 0; i < head_num; i++) {
+        $('.avatar_list_div').append('<img src=./images/avatar/' + i + '.jpeg />');
     }
+    $('.avatar_list_div img').bind('click', function () {
+        $('#avatarList').attr('src', $(this).attr('src'));
+    });
 }
 
 /**
@@ -211,19 +210,27 @@ function showChatRoom(isShow) {
  * @returns {string}
  */
 function createUser() {
-    var username = $("#username").val();
-    var option = $("input[name='headPortrait']:checked").val();
-    var headPortrait = './images/' + (option > head_num || option < 0 ? 0 : option) + '.jpg';
-    console.log('headPortrait ->', headPortrait);
-    if (username.trim() != "" && username.trim().length < 9) {
-        username = htmlEncode(username);
+    var username = '匿名';
+    var avatar = './images/avatar/1.jpeg';
+    var user = getUser();
+
+    if (user !== '') {
+        username = user.username;
+        avatar = user.avatar;
     } else {
-        username = '匿名';
+        var inputName = $('#username').val();
+        var inputAvatar = $('#avatarList').attr('src');
+        if (inputName.trim() !== '' && inputName.trim().length < 9) {
+            username = htmlEncode(inputName);
+        }
+        if (inputAvatar !== undefined || inputAvatar !== '') {
+            avatar = inputAvatar
+        }
     }
 
     return {
         'username': username,
-        'avatar': headPortrait
+        'avatar': avatar
     };
 }
 
@@ -408,10 +415,63 @@ function showUserList(data) {
 }
 
 /**
- * 登出
+ * 退出
  */
-function logout() {
+function exit() {
     if (confirm('确定退出吗？')) {
         disconnect();
     }
+}
+
+/**
+ * 缓存用户信息
+ * @param data
+ */
+function cacheUser(data) {
+    Cookies.set('user', data);
+}
+
+/**
+ * 获取用户信息
+ * @returns {*}
+ */
+function getUser() {
+    var data = Cookies.get('user');
+    if (data !== undefined) {
+        return JSON.parse(data);
+    }
+    return '';
+}
+
+/**
+ * 初始化登陆信息
+ */
+function init() {
+    // 初始化头像单选框
+    showHeadPortrait();
+    var user = getUser();
+    if (user !== '') {
+        $('#username').hide();
+        $('.login_avatar').removeClass('dropdown');
+        $('#avatarList').attr('src', user.avatar);
+        $('.login-name').html(user.username);
+        $('#logout').bind('click', logout);
+        $('#logout').show();
+    }
+    $('#joinChat').bind('click', connect);
+}
+
+/**
+ * 注销
+ */
+function logout() {
+    Cookies.remove('user');
+    refresh();
+}
+
+/**
+ * 刷新
+ */
+function refresh() {
+    window.location.reload();
 }

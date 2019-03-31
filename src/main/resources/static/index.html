@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xechat</title>
+    <title>xechat-小毅博客在线聊天室</title>
     <link rel="stylesheet" type="text/css"
           href="./css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="./css/style.css">
@@ -12,15 +12,20 @@
 
 <body>
 <div id="login">
-    <center><h3>欢迎您来到<a href="http://www.xeblog.cn" target="_blank">小毅博客</a>聊天室！</h3></center>
-    <h4 align="right">———&nbsp;Where are you from?</h4>
+    <div><h3 class="text-center">XECHAT</h3></div>
     <div class="login_fm">
-        <h4>给自己取个帅气点的网名吧！</h4>
         <form>
-            <input type="text" id="username" placeholder="请在此处输入网名！" class="form-control"><br>
-            <h4>选择一个自己喜欢的头像吧！</h4>
-            <div id="showHead"></div>
-            <input type="button" value="ok，进入聊天室" id="joinChat" class="btn btn-primary btn-lg">
+            <div class="login_avatar dropdown">
+                <img src="./images/avatar/0.jpeg" id="avatarList" data-toggle="dropdown"/>
+                <div class="dropdown-menu avatar_list_div" aria-labelledby="avatarList">
+                </div>
+            </div>
+            <div class="login-name"></div>
+            <input type="text" id="username" placeholder="请在此处输入您的昵称！" class="form-control">
+            <button type="button" class="btn btn-primary" id="joinChat">登入&nbsp;<i
+                    class="glyphicon glyphicon-log-in"></i></button>
+            &nbsp;<button type="button" class="btn btn-primary" id="logout" style="display: none">注销&nbsp;
+            <i class="glyphicon glyphicon-log-out"></i></button>
         </form>
     </div>
 </div>
@@ -33,9 +38,9 @@
         </div>
         <a href="#panel-left" data-iconpos="notext"
            class="col-xs-2 text-right"> </a> <a class="text-center col-xs-8"
-                                                target="_blank">小毅博客聊天室（<font color="orange" id="online_num"><img
+                                                target="_blank">聊天室（<font color="orange" id="online_num"><img
             src="./images/loader.gif" width="15" height="15"></font>）</a>
-        <div class="dropdown logout" onclick="logout()">
+        <div class="dropdown exit" onclick="exit()">
             <i class="glyphicon glyphicon-log-out dropdown-toggle"></i>
         </div>
     </div>
@@ -57,15 +62,10 @@
         </div>
     </div>
     <input type="file" style="display: none" id="file" onchange="sendImage()"/>
-    <div class="text-center" style="line-height: 30px">
-        <a href="https://www.xeblog.cn/" target="_blank">&copy;&nbsp;小毅博客</a>
-    </div>
+</div>
+<div class="text-center" style="line-height: 30px;border-top: 1px solid #cccccc;">
+    <a href="https://www.xeblog.cn/" target="_blank">&copy;&nbsp;小毅博客</a>
 </div>
 <script type="text/javascript" src="./js/xechat.js"></script>
-<script>
-    $(function () {
-        $('#joinChat').bind('click', connect);
-    });
-</script>
 </body>
 </html>

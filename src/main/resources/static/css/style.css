@@ -318,3 +318,8 @@ li {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+.logout {
+    position: absolute;
+    right: 15px;
+}

@@ -67,6 +67,9 @@ function sub() {
         });
 
         setConnected(true);
+    }, function (error) {
+        alert('请重新连接！');
+        showChatRoom(false);
     });
 
 }
@@ -99,7 +102,7 @@ function disconnect() {
     if (stompClient !== null) {
         setConnected(false);
         stompClient.disconnect();
-        console.log('Disconnected');
+        window.location.reload();
     }
 }
 
@@ -401,5 +404,14 @@ function showUserList(data) {
         var obj = data[i];
         $('#onlineUserList').append('<li id=' + obj.userId + '><a href="#"><div><img class="img-responsive avatar_list"' +
             ' src=' + obj.avatar + '><div class="name_list">' + obj.username + '</div></div></a></li>');
+    }
+}
+
+/**
+ * 登出
+ */
+function logout() {
+    if (confirm('确定退出吗？')) {
+        disconnect();
     }
 }

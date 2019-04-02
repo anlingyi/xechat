@@ -47,14 +47,7 @@ public class XeChatController {
     public ResponseVO chatRoom(MessageRO messageRO, User user) {
         log.debug("来自聊天室的消息：{}", messageRO);
 
-        MessageVO messageVO = new MessageVO();
-        messageVO.setSendTime(DateUtils.getDate(DateConstant.SEND_TIME_FORMAT));
-        messageVO.setUser(user);
-        messageVO.setMessage(messageRO.getMessage());
-        messageVO.setType(MessageTypeEnum.USER);
-        messageVO.setImage(messageRO.getImage());
-
-        return new ResponseVO(messageVO);
+        return buildResponseVo(messageRO, user, MessageTypeEnum.USER);
     }
 
     /**
@@ -69,11 +62,20 @@ public class XeChatController {
     public void sendToUser(MessageRO messageRO, User user) {
         log.debug("来自用户的消息：{}", messageRO);
 
-        /*
+        if (messageRO.getReceiver() == null) {
+            return;
+        }
+
+        final ResponseVO responseVO = buildResponseVo(messageRO, user, MessageTypeEnum.USER);
+
+        String[] receiver = messageRO.getReceiver();
+        for (int i = 0, len = receiver.length; i < len; i++) {
+            /*
             将消息发送到指定用户
             参数说明：1.消息接受者 2.消息订阅地址 3.消息内容
-         */
-        messagingTemplate.convertAndSendToUser(messageRO.getReceiver(), StompConstant.SUB_USER, messageRO);
+            */
+            messagingTemplate.convertAndSendToUser(receiver[i], StompConstant.SUB_USER, responseVO);
+        }
     }
 
     /**
@@ -111,6 +113,17 @@ public class XeChatController {
         revokeMsgVo.setType(MessageTypeEnum.REVOKE);
 
         messagingTemplate.convertAndSend(StompConstant.SUB_CHAT_ROOM, new ResponseVO(revokeMsgVo));
+    }
+
+    private ResponseVO buildResponseVo(MessageRO messageRO, User user, MessageTypeEnum messageTypeEnum) {
+        MessageVO messageVO = new MessageVO();
+        messageVO.setSendTime(DateUtils.getDate(DateConstant.SEND_TIME_FORMAT));
+        messageVO.setUser(user);
+        messageVO.setMessage(messageRO.getMessage());
+        messageVO.setType(messageTypeEnum);
+        messageVO.setImage(messageRO.getImage());
+
+        return new ResponseVO(messageVO);
     }
 
 }

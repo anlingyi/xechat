@@ -21,6 +21,8 @@ public class MessageVO implements Serializable {
 
     private static final long serialVersionUID = -1455469852669257711L;
 
+    private Long timestamp = System.currentTimeMillis();
+
     /**
      * 用户
      */
@@ -47,6 +49,6 @@ public class MessageVO implements Serializable {
     private String sendTime;
 
     public String getMessageId() {
-        return user.getUserId() + ':' + System.currentTimeMillis();
+        return user.getUserId() + ':' + timestamp;
     }
 }

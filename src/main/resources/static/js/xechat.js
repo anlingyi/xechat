@@ -5,10 +5,12 @@ var head_num = 50;
 // 用户id
 var uid = null;
 var stompClient = null;
+var onlineUserList;
 
 // 页面加载完成后
 window.onload = function () {
     init();
+    $('#content').bind('keyup', showToUserList);
     // 页面加载完成监听回车事件
     document.getElementById("content").addEventListener("keydown", function (e) {
         if (e.keyCode != 13) return;
@@ -50,7 +52,7 @@ function sub() {
 
         // 本地订阅
         stompClient.subscribe('/user/' + uid + '/chat', function (data) {
-            console.log('resp: ' + data);
+            handleMessage(getData(data.body));
         });
 
         // 错误信息订阅
@@ -69,7 +71,7 @@ function sub() {
         setConnected(true);
     }, function (error) {
         alert('请重新连接！');
-        showChatRoom(false);
+        refresh();
     });
 
 }
@@ -147,10 +149,35 @@ function sendToChatRoom() {
         return;
     }
 
-    var data = JSON.stringify({
+    showToUserList(content);
+
+    var toUser = [uid];
+    var strs = content.split('@');
+
+    for (var i = 1; i < strs.length; i++) {
+        var index = strs[i].indexOf(' ');
+        var str = getUserIdByName(strs[i].substr(0, index != -1 ? index : strs[i].length));
+        if (str !== undefined && str !== '') {
+            toUser.push(str);
+        }
+    }
+
+    console.log('toUser =>', toUser);
+
+    var data = {
         "message": htmlEncode(content)
-    });
-    sendMessage('/chatRoom', {}, data);
+    };
+
+    var pub = '/chatRoom';
+    if (toUser.length > 1) {
+        pub = '/chat';
+        data.receiver = toUser;
+        console.log('data =>', data);
+    }
+
+    data = JSON.stringify(data);
+
+    sendMessage(pub, {}, data);
     $('#content').val('');
     changeBtn();
 }
@@ -248,6 +275,7 @@ function handleSystemMsg(data) {
     }
 
     showSystemMsg(message);
+    jumpToLow();
 }
 
 /**
@@ -259,17 +287,19 @@ function showUserMsg(data) {
     var isMe = user.userId === uid;
     var style_css = isMe ? 'even' : 'odd';
     var event = isMe ? 'ondblclick=revokeMessage("' + data.messageId + '")' : '';
+    var event2 = isMe ? '' : 'ondblclick=showToUser("' + user.username + '")';
 
     var showMessage = data.message == null ? '' : htmlEncode(data.message);
     var showImage = data.image == null ? '' : '<div class="show_image"><img src="' + data.image + '"/></div>';
     var li = '<li class=' + style_css + ' id=' + data.messageId + '>';
-    var a = '<a class="user" href="#">';
+    var a = '<a class="user" ' + event2 + '>';
     var avatar = '<img class="img-responsive avatar_" src=' + user.avatar + '\>';
     var span = '<span class="user-name">' + user.username + '</span></a>';
     var div = '<div class="reply-content-box"><span class="reply-time">' + data.sendTime + '&nbsp;From:' + user.address + '</span>';
     var div2 = '<div class="reply-content pr" ' + event + '><span class="arrow">&nbsp;</span>' + showMessage + showImage + '</div></div></li>';
 
     var html = li + a + avatar + span + div + div2;
+
     $("#show_content").append(html);
     jumpToLow();
 }
@@ -305,8 +335,12 @@ function handleMessage(data) {
  * @param data
  */
 function showRevokeMessage(data) {
-    document.getElementById(data.revokeMessageId).remove();
-    showSystemMsg(data.user.username + '撤回了一条消息！');
+    var obj = document.getElementById(data.revokeMessageId);
+    if (obj) {
+        obj.remove();
+        showSystemMsg(data.user.username + '撤回了一条消息！');
+        jumpToLow();
+    }
 }
 
 /**
@@ -406,6 +440,7 @@ function sendImageToChatRoom(image) {
  * @param data
  */
 function showUserList(data) {
+    onlineUserList = data;
     $('#onlineUserList').html('');
     for (var i = 0; i < data.length; i++) {
         var obj = data[i];
@@ -474,4 +509,81 @@ function logout() {
  */
 function refresh() {
     window.location.reload();
+}
+
+/**
+ * 显示@用户列表
+ * @param str
+ */
+function showToUserList() {
+    var str = $('#content').val();
+    var index = str.lastIndexOf('@');
+    var name = str.substring(index + 1, str.length);
+    console.log('name,index -> ', name, index);
+    $('.toUserList ul').html('');
+
+    if (index != -1) {
+        for (var i = 0; i < onlineUserList.length; i++) {
+            var obj = onlineUserList[i];
+            if (obj.userId == uid) {
+                continue;
+            }
+
+            if (name === '') {
+                $('.toUserList ul').append('<li><a onclick="setToUser(this)" data-name="' + obj.username + '"' +
+                    ' data-userid="' + obj.userId + '"><div><img class=\'img-responsive avatar_list\' src="' + obj.avatar + '">\n' +
+                    '<div class="name_list">' + obj.username + '</div></div></a></li>');
+            } else if (obj.username.indexOf(name) != -1) {
+                $('.toUserList ul').append('<li><a onclick="setToUser(this)" data-name="' + obj.username + '"' +
+                    ' data-userId="' + obj.userId + '"><div><img class=\'img-responsive avatar_list\' src="' + obj.avatar + '">\n' +
+                    '<div class="name_list">' + obj.username + '</div></div></a></li>');
+            }
+        }
+    }
+}
+
+/**
+ * 设置@用户
+ * @param ele
+ */
+function setToUser(ele) {
+    console.log($(ele).data('name'));
+    var str = $('#content').val();
+    var name = $(ele).data('name') + ' ';
+    var index = str.lastIndexOf('@') + 1;
+    var substr = str.substr(index, str.length);
+
+    if (substr === '') {
+        $('#content').val(str + name);
+    } else {
+        $('#content').val(str.substr(0, index) + name);
+    }
+
+    $('.toUserList ul').html('');
+}
+
+/**
+ * 通过name获取userid
+ * @param name
+ * @returns {Document.userId|string}
+ */
+function getUserIdByName(name) {
+    if (name == '') {
+        return '';
+    }
+
+    for (var i = 0; i < onlineUserList.length; i++) {
+        var obj = onlineUserList[i];
+        if (obj.userId != uid && obj.username.indexOf(name) != -1) {
+            return obj.userId;
+        }
+    }
+}
+
+/**
+ * 双击用户头像@用户
+ * @param name
+ */
+function showToUser(name) {
+    $('#content').val($('#content').val() + '@' + name + ' ');
 }

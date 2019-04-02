@@ -22,7 +22,7 @@ public class MessageRO implements Serializable {
     /**
      * 接收者
      */
-    private String receiver;
+    private String[] receiver;
     /**
      * 消息
      */

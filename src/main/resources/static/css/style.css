@@ -368,3 +368,29 @@ li {
     margin: 10px;
     font-size: 16px;
 }
+
+.toUserList {
+    width: 160px;
+    max-height: 180px;
+    line-height: 30px;
+    margin-left: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background-color: #fff;
+    overflow-y: scroll;
+}
+
+.toUserList ul {
+    margin-left: 15px;
+}
+
+.toUserList li {
+    margin: 5px;
+    cursor: pointer;
+}
+
+.toUserList a {
+    color: #333;
+    font-weight: normal;
+}

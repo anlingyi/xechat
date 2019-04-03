@@ -6,6 +6,7 @@ var head_num = 50;
 var uid = null;
 var stompClient = null;
 var onlineUserList;
+var address = '未知地区';
 
 // 页面加载完成后
 window.onload = function () {
@@ -257,7 +258,8 @@ function createUser() {
 
     return {
         'username': username,
-        'avatar': avatar
+        'avatar': avatar,
+        'address': address
     };
 }
 
@@ -295,7 +297,8 @@ function showUserMsg(data) {
     var a = '<a class="user" ' + event2 + '>';
     var avatar = '<img class="img-responsive avatar_" src=' + user.avatar + '\>';
     var span = '<span class="user-name">' + user.username + '</span></a>';
-    var div = '<div class="reply-content-box"><span class="reply-time">' + data.sendTime + '&nbsp;From:' + user.address + '</span>';
+    var div = '<div class="reply-content-box"><span class="reply-time"><i class="glyphicon glyphicon-time"></i> '
+        + data.sendTime + '&nbsp;<i class="glyphicon glyphicon-map-marker\n"></i>' + user.address + '</span>';
     var div2 = '<div class="reply-content pr" ' + event + '><span class="arrow">&nbsp;</span>' + showMessage + showImage + '</div></div></li>';
 
     var html = li + a + avatar + span + div + div2;
@@ -482,6 +485,8 @@ function getUser() {
  * 初始化登陆信息
  */
 function init() {
+    // 定位
+    getAddress();
     // 初始化头像单选框
     showHeadPortrait();
     var user = getUser();
@@ -519,7 +524,6 @@ function showToUserList() {
     var str = $('#content').val();
     var index = str.lastIndexOf('@');
     var name = str.substring(index + 1, str.length);
-    console.log('name,index -> ', name, index);
     $('.toUserList ul').html('');
 
     if (index != -1) {
@@ -529,13 +533,9 @@ function showToUserList() {
                 continue;
             }
 
-            if (name === '') {
+            if (name === '' || obj.username.indexOf(name) != -1) {
                 $('.toUserList ul').append('<li><a onclick="setToUser(this)" data-name="' + obj.username + '"' +
                     ' data-userid="' + obj.userId + '"><div><img class=\'img-responsive avatar_list\' src="' + obj.avatar + '">\n' +
-                    '<div class="name_list">' + obj.username + '</div></div></a></li>');
-            } else if (obj.username.indexOf(name) != -1) {
-                $('.toUserList ul').append('<li><a onclick="setToUser(this)" data-name="' + obj.username + '"' +
-                    ' data-userId="' + obj.userId + '"><div><img class=\'img-responsive avatar_list\' src="' + obj.avatar + '">\n' +
                     '<div class="name_list">' + obj.username + '</div></div></a></li>');
             }
         }
@@ -547,7 +547,6 @@ function showToUserList() {
  * @param ele
  */
 function setToUser(ele) {
-    console.log($(ele).data('name'));
     var str = $('#content').val();
     var name = $(ele).data('name') + ' ';
     var index = str.lastIndexOf('@') + 1;
@@ -586,4 +585,23 @@ function getUserIdByName(name) {
  */
 function showToUser(name) {
     $('#content').val($('#content').val() + '@' + name + ' ');
+}
+
+/**
+ * 定位
+ */
+function getAddress() {
+    $.ajax({
+        type: "GET",
+        url: "https://api.map.baidu.com/location/ip",
+        data: {ak: "mHGeNrAuzZscixVMAjfaq1PPgKPOnoPm"},
+        dataType: "jsonp",
+        async: false,
+        success: function (data) {
+            address = data.content.address;
+        },
+        error: function () {
+            console.log("定位失败！");
+        }
+    });
 }

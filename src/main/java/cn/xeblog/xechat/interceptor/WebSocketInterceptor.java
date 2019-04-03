@@ -40,7 +40,7 @@ public class WebSocketInterceptor implements ChannelInterceptor {
             user.setUserId(UUID.randomUUID().toString());
             user.setUsername(stompHeaderAccessor.getFirstNativeHeader("username"));
             user.setAvatar(stompHeaderAccessor.getFirstNativeHeader("avatar"));
-            user.setAddress("浙江省杭州市");
+            user.setAddress(stompHeaderAccessor.getFirstNativeHeader("address"));
             user.setStatus(UserStatusConstant.ONLINE);
 
             stompHeaderAccessor.setUser(user);

@@ -7,40 +7,40 @@ body {
         is safer to choose than a specific font,
         which may not be on the users computer		*/
     font-family: Georgia, Palatino, serif;
-/ font-family: "Book Antiqua", Palatino, serif;
-/ font-family: Arial, Helvetica, sans-serif;
-/ font-family: Tahoma, Verdana, Geneva, sans-serif;
-/ font-family: Courier, monospace;
-/ font-family: "Times New Roman", Times, serif;
+    /*font-family: "Book Antiqua", Palatino, serif;*/
+    /*font-family: Arial, Helvetica, sans-serif;*/
+    /*font-family: Tahoma, Verdana, Geneva, sans-serif;*/
+    /*font-family: Courier, monospace;*/
+    /*font-family: "Times New Roman", Times, serif;*/
 
     /*	-------------- COLOR OPTIONS ------------
          following are additional color options for base font
         you could uncomment another one to easily change the base color
         or add one to a specific element style below         */
     color: #333333; /* dark gray not black */
-/ color: #000000; /* black */
-/ color: #666666; /* medium gray  black */
-/ color: #E3E3E3; /* very light gray */
-/ color: white;
+    /*color: #000000; !* black *!*/
+    /*color: #666666; !* medium gray  black *!*/
+    /*color: #E3E3E3; !* very light gray *!*/
+    /*color: white;*/
 
     line-height: 1;
-/ max-width: 960 px;
+    /*max-width: 960px;*/
     max-width: 800px;
     padding: 30px;
     font-size: 18px;
 }
 
 p {
-/ font-size: 22 px;
+    font-size: 18px;
     line-height: 150%;
-/ max-width: 540 px;
+    /*max-width: 540px;*/
     max-width: 960px;
     font-weight: 400;
     color: #333333
 }
 
 h1, h2, h3, h4 {
-/ color: #111111;
+    color: #111111;
     font-weight: 400;
 }
 
@@ -57,8 +57,7 @@ h1 {
 }
 
 h2 {
-    font-size: 150%
-/
+    font-size: 150%;
     margin: 24px 0 6px;
 }
 
@@ -67,18 +66,18 @@ h3 {
 }
 
 h4 {
-    font-size: 100%
+    font-size: 100%;
     font-variant: small-caps;
 
 }
 
 h5 {
-    font-size: 80%
+    font-size: 80%;
     font-weight: 100;
 }
 
 h6 {
-    font-size: 80%
+    font-size: 80%;
     font-weight: 100;
     color: red;
     font-variant: small-caps;
@@ -145,7 +144,7 @@ blockquote {
 }
 
 blockquote cite {
-/ font-size: 14 px;
+    font-size: 14px;
     line-height: 20px;
     color: #bfbfbf;
 }
@@ -160,7 +159,7 @@ blockquote p {
 }
 
 hr {
-/ width: 540 px;
+    width: 540px;
     text-align: left;
     margin: 0 auto 0 0;
     color: #999;

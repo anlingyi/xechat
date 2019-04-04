@@ -10,7 +10,7 @@
     </parent>
     <groupId>cn.xeblog</groupId>
     <artifactId>xechat</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <name>xechat</name>
     <description>xechat</description>
 
@@ -49,6 +49,8 @@
     </dependencies>
 
     <build>
+        <defaultGoal>compile</defaultGoal>
+        <finalName>${name}-${version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

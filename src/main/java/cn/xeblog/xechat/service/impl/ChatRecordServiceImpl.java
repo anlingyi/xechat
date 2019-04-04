@@ -24,8 +24,8 @@ import java.util.List;
  * @author yanpanyi
  * @date 2019/4/4
  */
-@Service
 @Slf4j
+@Service
 public class ChatRecordServiceImpl implements ChatRecordService {
 
     @Value("${chatrecord.path}")

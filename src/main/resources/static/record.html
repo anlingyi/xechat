@@ -47,7 +47,7 @@
      * @param url
      */
     function readContent(e) {
-        $.get($(e).data('url'), function (data) {
+        $.get($(e).data('url'), {cache: false}, function (data) {
             $('#content').html(marked(data));
         });
     }

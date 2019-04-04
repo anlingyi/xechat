@@ -26,7 +26,6 @@ public class ChatRecordController {
      * 聊天记录列表
      *
      * @return
-     * @throws Exception
      */
     @GetMapping
     public ResponseVO listChatRecord() {

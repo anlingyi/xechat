@@ -15,6 +15,7 @@ import cn.xeblog.xechat.exception.ErrorCodeException;
 import cn.xeblog.xechat.service.ChatRecordService;
 import cn.xeblog.xechat.utils.CheckUtils;
 import cn.xeblog.xechat.utils.DateUtils;
+import cn.xeblog.xechat.utils.SensitiveWordUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -126,7 +127,7 @@ public class XeChatController {
         MessageVO messageVO = new MessageVO();
         messageVO.setSendTime(DateUtils.getDate(DateConstant.SEND_TIME_FORMAT));
         messageVO.setUser(user);
-        messageVO.setMessage(messageRO.getMessage());
+        messageVO.setMessage(SensitiveWordUtils.loveChina(messageRO.getMessage()));
         messageVO.setType(messageTypeEnum);
         messageVO.setImage(messageRO.getImage());
 

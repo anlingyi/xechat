@@ -2,6 +2,7 @@ package cn.xeblog.xechat.controller;
 
 import cn.xeblog.xechat.constant.DateConstant;
 import cn.xeblog.xechat.constant.StompConstant;
+import cn.xeblog.xechat.domain.dto.ChatRecordDTO;
 import cn.xeblog.xechat.domain.mo.User;
 import cn.xeblog.xechat.domain.ro.MessageRO;
 import cn.xeblog.xechat.domain.vo.MessageVO;
@@ -11,6 +12,7 @@ import cn.xeblog.xechat.enums.CodeEnum;
 import cn.xeblog.xechat.enums.MessageTypeEnum;
 import cn.xeblog.xechat.enums.inter.Code;
 import cn.xeblog.xechat.exception.ErrorCodeException;
+import cn.xeblog.xechat.service.ChatRecordService;
 import cn.xeblog.xechat.utils.CheckUtils;
 import cn.xeblog.xechat.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,8 @@ public class XeChatController {
 
     @Resource
     private SimpMessagingTemplate messagingTemplate;
+    @Resource
+    private ChatRecordService chatRecordService;
 
     /**
      * 聊天室发布订阅
@@ -111,6 +115,9 @@ public class XeChatController {
         revokeMsgVo.setRevokeMessageId(messageId);
         revokeMsgVo.setUser(user);
         revokeMsgVo.setType(MessageTypeEnum.REVOKE);
+        revokeMsgVo.setSendTime(DateUtils.getDate(DateConstant.SEND_TIME_FORMAT));
+
+        chatRecordService.addRecord(ChatRecordDTO.toChatRecordDTO(revokeMsgVo));
 
         messagingTemplate.convertAndSend(StompConstant.SUB_CHAT_ROOM, new ResponseVO(revokeMsgVo));
     }
@@ -122,6 +129,8 @@ public class XeChatController {
         messageVO.setMessage(messageRO.getMessage());
         messageVO.setType(messageTypeEnum);
         messageVO.setImage(messageRO.getImage());
+
+        chatRecordService.addRecord(ChatRecordDTO.toChatRecordDTO(messageVO));
 
         return new ResponseVO(messageVO);
     }

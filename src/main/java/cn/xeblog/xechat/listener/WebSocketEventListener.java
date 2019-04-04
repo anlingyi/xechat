@@ -4,10 +4,12 @@ import cn.xeblog.xechat.cache.UserCache;
 import cn.xeblog.xechat.constant.DateConstant;
 import cn.xeblog.xechat.constant.StompConstant;
 import cn.xeblog.xechat.constant.UserStatusConstant;
+import cn.xeblog.xechat.domain.dto.ChatRecordDTO;
 import cn.xeblog.xechat.domain.mo.User;
 import cn.xeblog.xechat.domain.vo.DynamicMsgVo;
 import cn.xeblog.xechat.domain.vo.ResponseVO;
 import cn.xeblog.xechat.enums.MessageTypeEnum;
+import cn.xeblog.xechat.service.ChatRecordService;
 import cn.xeblog.xechat.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -33,6 +35,8 @@ public class WebSocketEventListener {
 
     @Resource
     private SimpMessagingTemplate messagingTemplate;
+    @Resource
+    private ChatRecordService chatRecordService;
 
     private User user;
 
@@ -115,6 +119,8 @@ public class WebSocketEventListener {
         dynamicMsgVo.setUser(user);
         dynamicMsgVo.setOnlineCount(UserCache.getOnlineCount());
         dynamicMsgVo.setOnlineUserList(UserCache.listUser());
+
+        chatRecordService.addRecord(ChatRecordDTO.toChatRecordDTO(dynamicMsgVo));
 
         return new ResponseVO(dynamicMsgVo);
     }

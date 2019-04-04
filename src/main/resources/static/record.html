@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>聊天记录列表</title>
+    <link rel="stylesheet" type="text/css" href="./css/markdown.css">
+    <style>
+        #recordList li {
+            cursor: pointer;
+        }
+
+        #recordList li:hover {
+            color: #a94967;
+        }
+    </style>
+</head>
+<body>
+
+<div>
+    <p>聊天记录文件列表</p>
+    <div style="width: 100%;height: 100px;overflow-y: scroll">
+        <ul id="recordList">
+        </ul>
+    </div>
+</div>
+<hr/>
+<div id="content" style="width: 100%;height: 600px;overflow-y: scroll">
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/marked.min.js"></script>
+<script>
+    $(function () {
+        $.get('/api/record', function (data) {
+            if (data.code === 200) {
+                var list = data.data.list;
+                for (var i = 0; i < list.length; i++) {
+                    var obj = list[i];
+                    $('#recordList').append('<li onclick="readContent(this)" data-url="' + obj.url + '">' + obj.name + '</li>');
+                }
+            }
+        });
+    });
+
+    /**
+     * 读取文件内容
+     * @param url
+     */
+    function readContent(e) {
+        $.get($(e).data('url'), function (data) {
+            $('#content').html(marked(data));
+        });
+    }
+</script>
+</body>
+</html>

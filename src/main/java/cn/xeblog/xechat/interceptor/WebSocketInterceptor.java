@@ -49,5 +49,4 @@ public class WebSocketInterceptor implements ChannelInterceptor {
 
         return message;
     }
-
 }

@@ -22,8 +22,8 @@ import java.util.regex.Pattern;
 @Configuration
 public class SensitiveWordUtils {
 
-    private final static String[] LOVE_CHINA = {"富强", "民主", "文明", "和谐", "平等", "公正", "法治", "爱国", "敬业",
-            "诚信", "友善"};
+    private final static String[] LOVE_CHINA = {"富强", "民主", "文明", "和谐", "自由", "平等", "公正", "法治", "爱国",
+            "敬业", "诚信", "友善"};
 
     /**
      * 敏感词库

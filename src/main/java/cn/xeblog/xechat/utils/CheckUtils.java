@@ -2,7 +2,10 @@ package cn.xeblog.xechat.utils;
 
 import cn.xeblog.xechat.enums.CodeEnum;
 import cn.xeblog.xechat.exception.ErrorCodeException;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  * 校验相关
@@ -10,12 +13,20 @@ import org.apache.commons.lang3.StringUtils;
  * @author yanpanyi
  * @date 2019/3/25
  */
+@Component
 public class CheckUtils {
 
     /**
      * 撤消消息过期时间 3分钟
      */
     private static final long MESSAGE_EXPIRE_DATE = 180000;
+
+    private static String password;
+
+    @Value("${chatrecord.password}")
+    public void setPassword(String password) {
+        CheckUtils.password = password;
+    }
 
     /**
      * 校验撤消的消息id
@@ -49,5 +60,15 @@ public class CheckUtils {
     public static boolean isImage(String type) {
         return ".jpg".equals(type) || ".jpeg".equals(type) || ".png".equals(type) || ".bmp".equals(type)
                 || ".gif".equals(type);
+    }
+
+    /**
+     * 校验token
+     *
+     * @param token
+     * @return
+     */
+    public static boolean checkToken(String token) {
+        return StringUtils.isEmpty(token) ? false : password.equals(DigestUtils.md5Hex(token));
     }
 }

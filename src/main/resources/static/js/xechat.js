@@ -605,3 +605,62 @@ function getAddress() {
         }
     });
 }
+
+var token;
+
+/**
+ * 获取聊天记录列表
+ */
+function listRecord() {
+    $.ajax({
+        type: "GET",
+        url: "/api/record",
+        headers: {
+            "token": token
+        },
+        dataType: "json",
+        success: function (data) {
+            codeMapping(data);
+            if (data.code === 200) {
+                $('#passwordModel').modal('hide');
+                $('#record').show();
+                var list = data.data.list;
+                for (var i = 0; i < list.length; i++) {
+                    var obj = list[i];
+                    $('#recordList').append('<li onclick="readContent(this)" data-url="' + obj.url + '">' + obj.name + '</li>');
+                }
+            }
+        }
+    });
+}
+
+/**
+ * 读取文件内容
+ * @param url
+ */
+function readContent(e) {
+    $.ajax({
+        type: "GET",
+        url: $(e).data('url'),
+        headers: {
+            "token": token
+        },
+        cache: false,
+        success: function (data) {
+            $('#record #content').html(marked(data));
+        }
+    });
+}
+
+/**
+ * 校验密码
+ */
+function checkPassword() {
+    var val = $('#record_password').val();
+    if (val === '') {
+        alert("请输入访问密码！！！");
+    } else {
+        token = btoa(val);
+        listRecord();
+    }
+}

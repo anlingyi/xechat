@@ -297,11 +297,13 @@ function showUserMsg(data) {
     var a = '<a class="user" ' + event2 + '>';
     var avatar = '<img class="img-responsive avatar_" src=' + user.avatar + '\>';
     var span = '<span class="user-name">' + user.username + '</span></a>';
-    var div = '<div class="reply-content-box"><span class="reply-time"><i class="glyphicon glyphicon-time"></i> '
-        + data.sendTime + '&nbsp;<i class="glyphicon glyphicon-map-marker\n"></i>' + user.address + '</span>';
+    var div_me = '<div class="reply-content-box"><span class="reply-time"><i class="glyphicon glyphicon-time"></i> '
+        + data.sendTime + '&nbsp;<i class="glyphicon glyphicon-map-marker"></i>' + user.address + '</span>';
+    var div = '<div class="reply-content-box"><span class="reply-time"><i class="glyphicon glyphicon-map-marker"></i>'
+        + user.address + '&nbsp;<i class="glyphicon glyphicon-time"></i> ' + data.sendTime + '</span>';
     var div2 = '<div class="reply-content pr" ' + event + '><span class="arrow">&nbsp;</span>' + showMessage + showImage + '</div></div></li>';
 
-    var html = li + a + avatar + span + div + div2;
+    var html = li + a + avatar + span + (isMe ? div_me : div) + div2;
 
     $("#show_content").append(html);
     jumpToLow();

@@ -224,6 +224,7 @@ li {
 
 .send_div {
     width: 100%;
+    box-shadow: 0 0 5px #ccc;
 }
 
 .div_left {
@@ -284,8 +285,8 @@ li {
 }
 
 .show_image {
-    width: 300px;
-    height: 200px;
+    width: 65%;
+    height: 65%;
 }
 
 .reply-content img {
@@ -293,10 +294,6 @@ li {
     height: auto;
     max-width: 100%;
     max-height: 100%;
-}
-
-.reply-content .show_image {
-    text-align: center;
 }
 
 .user-list {
@@ -360,8 +357,9 @@ li {
 }
 
 #login {
-    height: 380px;
+    height: 360px;
     padding-top: 30px;
+    border-bottom: 1px solid #ccc;
 }
 
 .login-name {

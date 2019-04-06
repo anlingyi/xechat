@@ -44,7 +44,6 @@ function sub() {
     stompClient.connect(user, function (frame) {
         cacheUser(user);
         uid = frame.headers['user-name'];
-        console.log('uid -> ', uid);
 
         // 聊天室订阅
         stompClient.subscribe('/topic/chatRoom', function (data) {
@@ -163,8 +162,6 @@ function sendToChatRoom() {
         }
     }
 
-    console.log('toUser =>', toUser);
-
     var data = {
         "message": htmlEncode(content)
     };
@@ -173,7 +170,6 @@ function sendToChatRoom() {
     if (toUser.length > 1) {
         pub = '/chat';
         data.receiver = toUser;
-        console.log('data =>', data);
     }
 
     data = JSON.stringify(data);
@@ -389,6 +385,10 @@ function changeBtn() {
  */
 function sendImage() {
     var image = $("#file").val();
+    if (image === '' || image === undefined) {
+        return;
+    }
+
     var filename = image.replace(/.*(\/|\\)/, "");
     var fileExt = (/[.]/.exec(filename)) ? /[^.]+$/.exec(filename.toUpperCase()) : '';
 
@@ -602,8 +602,8 @@ function getAddress() {
         success: function (data) {
             address = data.content.address;
         },
-        error: function () {
-            console.log("定位失败！");
+        error: function (e) {
+            console.log("定位失败！", e);
         }
     });
 }

@@ -7,6 +7,8 @@
 
 * JDK1.8
 * Maven
+* IDEA
+* Lombok Plugin
 
 ## 部署
 

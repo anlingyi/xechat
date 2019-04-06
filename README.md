@@ -22,6 +22,15 @@ sudo chmod 777 /var/log/xechat
 sudo chmod 777 /xechat
 ```
 
+### 修改应用地址
+
+`application.properties` 配置文件里将 `app.url` 的值修改即可
+
+```
+#项目地址
+app.url=http://localhost:${server.port}
+```
+
 ### 编译运行
 
 finalName: `maven`打包的文件名，在`pom.xml`文件中由`<build>`标签内的`<finalName>`指定
@@ -135,4 +144,41 @@ java -jar ${finalName}.jar --spring.profiles.active=${env}
 ![](https://i.loli.net/2019/04/06/5ca7a767405c8.png)
 
 ![](https://i.loli.net/2019/04/06/5ca7a767447ad.png)
+
+### 聊天记录
+
+聊天记录访问地址 `http://ip:端口/record.html`
+
+进入聊天记录页面需要输入访问密码 默认的访问密码为 `xechat`
+
+#### 密码加密方式
+
+> 先将密码经过 `BASE64` 加密后再进行 `MD5` 的32位小写加密
+
+**加密流程**
+
+ 密码 `xechat` 经过 `BASE64` 加密后变为 `eGVjaGF0` ，再进行 `MD5` 32位小写加密后变为 `c85715fec7827f3b388af185b8e7db77`
+
+**修改密码**
+
+`application.properties` 配置文件里将 `chatrecord.password` 的值替换即可
+
+```
+#聊天记录页面访问密码(密码先经过base64加密后再进行32位md5加密)
+chatrecord.password=c85715fec7827f3b388af185b8e7db77
+```
+
+输入密码点击确定
+
+![](https://i.loli.net/2019/04/06/5ca83f71dbaba.png)
+
+密码输入正确后显示聊天记录文件列表，按照 `yyyyMMdd` 的方式每天自动生成一个 `.md` 格式的文件
+
+![](https://i.loli.net/2019/04/06/5ca83f71eeacf.png)
+
+点击列表中的文件可以查看当天的聊天记录
+
+![](https://i.loli.net/2019/04/06/5ca83f724e593.png)
+
+![](https://i.loli.net/2019/04/06/5ca83f7252659.png)
 

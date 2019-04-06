@@ -33,6 +33,14 @@ sudo chmod 777 /xechat
 app.url=http://localhost:${server.port}
 ```
 
+### 修改百度地图API
+
+项目中的定位功能使用的是百度地图的API
+
+需将 `ak` 的值替换成自己的
+
+![](https://i.loli.net/2019/04/06/5ca84c07051d7.png)
+
 ### 编译运行
 
 finalName: `maven`打包的文件名，在`pom.xml`文件中由`<build>`标签内的`<finalName>`指定

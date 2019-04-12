@@ -1,4 +1,4 @@
-[xechat](https://chat.xeblog.cn:8088/)
+[xechat](https://im.xeblog.cn)
 ===
 
 > 基于SpringBoot+STOMP协议实现的web聊天室

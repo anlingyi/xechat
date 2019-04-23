@@ -1,9 +1,13 @@
 package cn.xeblog.xechat.cache;
 
+import cn.xeblog.xechat.constant.RobotConstant;
+import cn.xeblog.xechat.constant.UserStatusConstant;
 import cn.xeblog.xechat.domain.mo.User;
+import cn.xeblog.xechat.utils.SensitiveWordUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -18,6 +22,20 @@ public class UserCache {
      * 在线用户列表
      */
     private static ConcurrentHashMap<String, User> userMap = new ConcurrentHashMap<>(32);
+
+    static {
+        // 初始化机器人信息
+        String uid = RobotConstant.key;
+        User user = new User();
+        user.setUserId(uid);
+        user.setUsername(RobotConstant.name);
+        user.setAvatar(RobotConstant.avatar);
+        user.setAddress(RobotConstant.address);
+        user.setStatus(UserStatusConstant.ONLINE);
+
+        // 将机器人加入到用户列表
+        userMap.put(uid, user);
+    }
 
     /**
      * 添加用户

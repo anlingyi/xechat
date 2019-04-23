@@ -114,7 +114,6 @@ public class WebSocketEventListener {
      */
     private ResponseVO buildResponse(User user) {
         DynamicMsgVo dynamicMsgVo = new DynamicMsgVo();
-        dynamicMsgVo.setSendTime(DateUtils.getDate(DateConstant.SEND_TIME_FORMAT));
         dynamicMsgVo.setType(MessageTypeEnum.SYSTEM);
         dynamicMsgVo.setUser(user);
         dynamicMsgVo.setOnlineCount(UserCache.getOnlineCount());

@@ -11,10 +11,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,7 +37,8 @@ public class ChatRecordServiceImpl implements ChatRecordService {
             file.getParentFile().mkdirs();
         }
 
-        try (BufferedWriter out = new BufferedWriter(new FileWriter(file, true))) {
+        try (BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true),
+                "UTF-8"))) {
             out.write(formatContent(chatRecordDTO));
         } catch (IOException e) {
             log.error("添加聊天记录异常，error ->", e);
@@ -95,6 +93,8 @@ public class ChatRecordServiceImpl implements ChatRecordService {
             case REVOKE:
                 sb.append("#### [" + chatRecordDTO.getSendTime() + "] 系统消息：\r\n");
                 sb.append("> " + user.getUsername() + "撤回了一条消息！\r\n");
+                break;
+            default:
                 break;
         }
 

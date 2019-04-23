@@ -1,8 +1,11 @@
 package cn.xeblog.xechat.utils;
 
+import cn.xeblog.xechat.domain.mo.User;
+import cn.xeblog.xechat.domain.ro.MessageRO;
 import cn.xeblog.xechat.enums.CodeEnum;
 import cn.xeblog.xechat.exception.ErrorCodeException;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -70,5 +73,69 @@ public class CheckUtils {
      */
     public static boolean checkToken(String token) {
         return StringUtils.isEmpty(token) ? false : password.equals(DigestUtils.md5Hex(token));
+    }
+
+    /**
+     * 校验用户信息
+     *
+     * @param user
+     * @return
+     */
+    public static boolean checkUser(User user) {
+        return null != user && StringUtils.isNotEmpty(user.getUserId());
+    }
+
+    /**
+     * 校验消息内容
+     *
+     * @param message
+     * @return
+     */
+    public static boolean checkMessage(String message) {
+        return StringUtils.isNotEmpty(message);
+    }
+
+    /**
+     * 校验图片地址
+     *
+     * @param image
+     * @return
+     */
+    public static boolean checkImageUrl(String image) {
+        return StringUtils.isNotEmpty(image);
+    }
+
+    /**
+     * 校验消息请求对象
+     *
+     * @param messageRO
+     * @return
+     */
+    public static boolean checkMessageRo(MessageRO messageRO) {
+        if (messageRO == null) {
+            return false;
+        }
+
+        return checkMessage(messageRO.getMessage()) || checkImageUrl(messageRO.getImage());
+    }
+
+    /**
+     * 校验订阅地址
+     *
+     * @param subAddress
+     * @return
+     */
+    public static boolean checkSubAddress(String subAddress) {
+        return StringUtils.isNotEmpty(subAddress);
+    }
+
+    /**
+     * 校验接收者
+     *
+     * @param receiver
+     * @return
+     */
+    public static boolean checkReceiver(String[] receiver) {
+        return ArrayUtils.isNotEmpty(receiver);
     }
 }

@@ -1,4 +1,4 @@
-[xechat](https://chat.xeblog.cn:8088/)
+[xechat](https://im.xeblog.cn)
 ===
 
 > 基于SpringBoot+STOMP协议实现的web聊天室
@@ -32,6 +32,14 @@ sudo chmod 777 /xechat
 #项目地址
 app.url=http://localhost:${server.port}
 ```
+
+### 修改百度地图API
+
+项目中的定位功能使用的是百度地图的API
+
+需将 `ak` 的值替换成自己的
+
+![](https://i.loli.net/2019/04/06/5ca84c07051d7.png)
 
 ### 编译运行
 

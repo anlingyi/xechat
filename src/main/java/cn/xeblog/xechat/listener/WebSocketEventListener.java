@@ -1,19 +1,18 @@
 package cn.xeblog.xechat.listener;
 
 import cn.xeblog.xechat.cache.UserCache;
-import cn.xeblog.xechat.constant.DateConstant;
 import cn.xeblog.xechat.constant.StompConstant;
 import cn.xeblog.xechat.constant.UserStatusConstant;
-import cn.xeblog.xechat.domain.dto.ChatRecordDTO;
 import cn.xeblog.xechat.domain.mo.User;
 import cn.xeblog.xechat.domain.vo.DynamicMsgVo;
-import cn.xeblog.xechat.domain.vo.ResponseVO;
+import cn.xeblog.xechat.domain.vo.MessageVO;
+import cn.xeblog.xechat.enums.CodeEnum;
 import cn.xeblog.xechat.enums.MessageTypeEnum;
-import cn.xeblog.xechat.service.ChatRecordService;
-import cn.xeblog.xechat.utils.DateUtils;
+import cn.xeblog.xechat.exception.ErrorCodeException;
+import cn.xeblog.xechat.service.MessageService;
+import cn.xeblog.xechat.utils.CheckUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Component;
@@ -34,9 +33,7 @@ import javax.annotation.Resource;
 public class WebSocketEventListener {
 
     @Resource
-    private SimpMessagingTemplate messagingTemplate;
-    @Resource
-    private ChatRecordService chatRecordService;
+    private MessageService messageService;
 
     private User user;
 
@@ -46,10 +43,14 @@ public class WebSocketEventListener {
      * @param sessionConnectedEvent
      */
     @EventListener
-    public void handleConnectListener(SessionConnectedEvent sessionConnectedEvent) {
+    public void handleConnectListener(SessionConnectedEvent sessionConnectedEvent) throws ErrorCodeException {
         log.debug("建立连接 -> {}", sessionConnectedEvent);
 
         user = (User) sessionConnectedEvent.getUser();
+        if (!CheckUtils.checkUser(user)) {
+            throw new ErrorCodeException(CodeEnum.INVALID_PARAMETERS);
+        }
+
         UserCache.addUser(user.getUserId(), user);
     }
 
@@ -59,7 +60,7 @@ public class WebSocketEventListener {
      * @param sessionDisconnectEvent
      */
     @EventListener
-    public void handleDisconnectListener(SessionDisconnectEvent sessionDisconnectEvent) {
+    public void handleDisconnectListener(SessionDisconnectEvent sessionDisconnectEvent) throws Exception {
         log.debug("断开连接 -> {}", sessionDisconnectEvent);
 
         String userId = sessionDisconnectEvent.getUser().getName();
@@ -73,7 +74,7 @@ public class WebSocketEventListener {
         UserCache.removeUser(userId);
 
         // 广播离线消息
-        sendMessage(buildResponse(user));
+        sendMessage(buildMessageVo(user));
         log.debug("广播离线消息 -> {}", user);
     }
 
@@ -83,7 +84,7 @@ public class WebSocketEventListener {
      * @param sessionSubscribeEvent
      */
     @EventListener
-    public void handleSubscribeListener(SessionSubscribeEvent sessionSubscribeEvent) {
+    public void handleSubscribeListener(SessionSubscribeEvent sessionSubscribeEvent) throws Exception {
         log.debug("新的订阅 -> {}", sessionSubscribeEvent);
         StompHeaderAccessor stompHeaderAccessor = MessageHeaderAccessor.getAccessor(sessionSubscribeEvent.getMessage(),
                 StompHeaderAccessor.class);
@@ -99,7 +100,7 @@ public class WebSocketEventListener {
                 }
 
                 // 广播上线消息
-                sendMessage(buildResponse(user));
+                sendMessage(buildMessageVo(user));
                 log.debug("广播上线消息 -> {}", user);
             }
 
@@ -107,30 +108,28 @@ public class WebSocketEventListener {
     }
 
     /**
-     * 构建响应数据
+     * 构建消息视图
      *
      * @param user
      * @return
      */
-    private ResponseVO buildResponse(User user) {
+    private MessageVO buildMessageVo(User user) {
         DynamicMsgVo dynamicMsgVo = new DynamicMsgVo();
         dynamicMsgVo.setType(MessageTypeEnum.SYSTEM);
         dynamicMsgVo.setUser(user);
         dynamicMsgVo.setOnlineCount(UserCache.getOnlineCount());
         dynamicMsgVo.setOnlineUserList(UserCache.listUser());
 
-        chatRecordService.addRecord(ChatRecordDTO.toChatRecordDTO(dynamicMsgVo));
-
-        return new ResponseVO(dynamicMsgVo);
+        return dynamicMsgVo;
     }
 
     /**
      * 发送订阅消息，广播用户动态
      *
-     * @param responseVO
+     * @param messageVO
      */
-    private void sendMessage(ResponseVO responseVO) {
-        messagingTemplate.convertAndSend(StompConstant.SUB_STATUS, responseVO);
+    private void sendMessage(MessageVO messageVO) throws Exception {
+        messageService.sendMessage(StompConstant.SUB_STATUS, messageVO);
     }
 
 }

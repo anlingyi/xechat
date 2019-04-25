@@ -1,9 +1,9 @@
 package cn.xeblog.xechat.service.impl;
 
+import cn.xeblog.xechat.annotation.ChatRecord;
 import cn.xeblog.xechat.cache.UserCache;
 import cn.xeblog.xechat.constant.RobotConstant;
 import cn.xeblog.xechat.constant.StompConstant;
-import cn.xeblog.xechat.domain.dto.ChatRecordDTO;
 import cn.xeblog.xechat.domain.mo.User;
 import cn.xeblog.xechat.domain.vo.MessageVO;
 import cn.xeblog.xechat.domain.vo.ResponseVO;
@@ -15,7 +15,9 @@ import cn.xeblog.xechat.service.ChatRecordService;
 import cn.xeblog.xechat.service.MessageService;
 import cn.xeblog.xechat.service.RobotService;
 import cn.xeblog.xechat.utils.CheckUtils;
+import cn.xeblog.xechat.utils.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -33,8 +35,6 @@ public class MessageServiceImpl implements MessageService {
     @Resource
     private SimpMessagingTemplate messagingTemplate;
     @Resource
-    private ChatRecordService chatRecordService;
-    @Resource
     private RobotService robotService;
 
     @Override
@@ -43,25 +43,22 @@ public class MessageServiceImpl implements MessageService {
         messagingTemplate.convertAndSendToUser(user.getUserId(), StompConstant.SUB_ERROR, new ResponseVO(code));
     }
 
+    @ChatRecord
     @Override
     public void sendMessage(String subAddress, MessageVO messageVO) throws Exception {
         if (!CheckUtils.checkSubAddress(subAddress)) {
             throw new ErrorCodeException(CodeEnum.INVALID_PARAMETERS);
         }
 
-        // 添加聊天记录
-        chatRecordService.addRecord(ChatRecordDTO.toChatRecordDTO(messageVO));
-
         messagingTemplate.convertAndSend(subAddress, buildResponseVo(messageVO));
     }
 
+    @ChatRecord
     @Override
     public void sendMessageToUser(String[] receiver, MessageVO messageVO) throws Exception {
         if (!CheckUtils.checkReceiver(receiver)) {
             throw new ErrorCodeException(CodeEnum.INVALID_PARAMETERS);
         }
-        // 添加聊天记录
-        chatRecordService.addRecord(ChatRecordDTO.toChatRecordDTO(messageVO));
 
         ResponseVO responseVO = buildResponseVo(messageVO);
         for (int i = 0, len = receiver.length; i < len; i++) {
@@ -85,7 +82,7 @@ public class MessageServiceImpl implements MessageService {
         String robotMessage = robotService.sendMessage(message.replaceFirst(RobotConstant.prefix, ""));
         log.info("机器人响应结果 -> {}", robotMessage);
 
-        sendMessage(subAddress, new MessageVO(UserCache.getUser(RobotConstant.key), robotMessage, MessageTypeEnum.ROBOT));
-
+        SpringUtils.getBean(this.getClass()).sendMessage(subAddress, new MessageVO(UserCache.getUser(RobotConstant.key),
+                robotMessage, MessageTypeEnum.ROBOT));
     }
 }

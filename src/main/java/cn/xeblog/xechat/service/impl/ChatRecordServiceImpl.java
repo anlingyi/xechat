@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -30,6 +31,7 @@ public class ChatRecordServiceImpl implements ChatRecordService {
     @Value("${chatrecord.accessAddress}")
     private String accessAddress;
 
+    @Async
     @Override
     public void addRecord(ChatRecordDTO chatRecordDTO) {
         File file = new File(path + createFileName());
@@ -93,6 +95,17 @@ public class ChatRecordServiceImpl implements ChatRecordService {
             case REVOKE:
                 sb.append("#### [" + chatRecordDTO.getSendTime() + "] 系统消息：\r\n");
                 sb.append("> " + user.getUsername() + "撤回了一条消息！\r\n");
+                break;
+            case ROBOT:
+                sb.append("#### [" + chatRecordDTO.getSendTime() + "] [系统机器人] " + user.getUsername() + "("
+                        + user.getAddress() + ")：\r\n");
+
+                if (!StringUtils.isEmpty(chatRecordDTO.getImage())) {
+                    sb.append("> ![](" + chatRecordDTO.getImage() + ")\r\n");
+                }
+                if (!StringUtils.isEmpty(chatRecordDTO.getMessage())) {
+                    sb.append("> " + chatRecordDTO.getMessage() + "\r\n");
+                }
                 break;
             default:
                 break;

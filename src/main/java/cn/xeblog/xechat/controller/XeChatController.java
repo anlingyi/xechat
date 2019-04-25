@@ -5,7 +5,6 @@ import cn.xeblog.xechat.constant.StompConstant;
 import cn.xeblog.xechat.domain.mo.User;
 import cn.xeblog.xechat.domain.ro.MessageRO;
 import cn.xeblog.xechat.domain.vo.MessageVO;
-import cn.xeblog.xechat.domain.vo.ResponseVO;
 import cn.xeblog.xechat.domain.vo.RevokeMsgVo;
 import cn.xeblog.xechat.enums.CodeEnum;
 import cn.xeblog.xechat.enums.MessageTypeEnum;
@@ -16,7 +15,6 @@ import cn.xeblog.xechat.utils.CheckUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -42,19 +40,18 @@ public class XeChatController {
      * @return
      */
     @MessageMapping(StompConstant.PUB_CHAT_ROOM)
-    @SendTo(StompConstant.SUB_CHAT_ROOM)
-    public ResponseVO chatRoom(MessageRO messageRO, User user) throws Exception {
+    public void chatRoom(MessageRO messageRO, User user) throws Exception {
         String message = messageRO.getMessage();
 
         if (!CheckUtils.checkMessageRo(messageRO) || !CheckUtils.checkUser(user)) {
-            return new ResponseVO(CodeEnum.INVALID_PARAMETERS);
+            throw new ErrorCodeException(CodeEnum.INVALID_PARAMETERS);
         }
-
         if (CheckUtils.checkMessage(message) && message.startsWith(RobotConstant.prefix)) {
             messageService.sendMessageToRobot(StompConstant.SUB_CHAT_ROOM, message, user);
         }
 
-        return new ResponseVO(new MessageVO(user, message, null, MessageTypeEnum.USER));
+        messageService.sendMessage(StompConstant.SUB_CHAT_ROOM, new MessageVO(user, message, messageRO.getImage(),
+                MessageTypeEnum.USER));
     }
 
     /**

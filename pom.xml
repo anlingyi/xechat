@@ -10,7 +10,7 @@
     </parent>
     <groupId>cn.xeblog</groupId>
     <artifactId>xechat</artifactId>
-    <version>1.0</version>
+    <version>1.2</version>
     <name>xechat</name>
     <description>xechat</description>
 
@@ -51,6 +51,17 @@
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.10</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
     </dependencies>

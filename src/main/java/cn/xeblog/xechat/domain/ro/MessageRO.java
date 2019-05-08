@@ -3,6 +3,7 @@ package cn.xeblog.xechat.domain.ro;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.Serializable;
 
@@ -32,4 +33,11 @@ public class MessageRO implements Serializable {
      */
     private String image;
 
+    public String[] getReceiver() {
+        return ArrayUtils.clone(receiver);
+    }
+
+    public void setReceiver(String[] receiver) {
+        this.receiver = ArrayUtils.clone(receiver);
+    }
 }

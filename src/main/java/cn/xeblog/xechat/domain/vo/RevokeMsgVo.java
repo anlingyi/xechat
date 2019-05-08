@@ -25,5 +25,4 @@ public class RevokeMsgVo extends MessageVO implements Serializable {
      * 撤回的消息id
      */
     private String revokeMessageId;
-
 }

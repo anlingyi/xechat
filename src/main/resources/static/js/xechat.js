@@ -45,6 +45,11 @@ function sub() {
         cacheUser(user);
         uid = frame.headers['user-name'];
 
+        if (uid === undefined) {
+            alert("进入聊天室失败，请重新连接！");
+            refresh();
+        }
+
         // 聊天室订阅
         stompClient.subscribe('/topic/chatRoom', function (data) {
             handleMessage(getData(data.body));
@@ -64,7 +69,7 @@ function sub() {
         stompClient.subscribe('/topic/status', function (data) {
             var obj = getData(data.body);
             showOnlineNum(obj.onlineCount);
-            handleSystemMsg(obj);
+            showSystemMsg(obj.message);
             showUserList(obj.onlineUserList);
         });
 
@@ -260,23 +265,6 @@ function createUser() {
 }
 
 /**
- * 处理系统消息
- * @param message
- */
-function handleSystemMsg(data) {
-    var message = '系统提示：';
-    var username = data.user.username;
-    if (data.user.status === 1) {
-        message += username + '进入了聊天室！';
-    } else {
-        message += username + '离开了聊天室！';
-    }
-
-    showSystemMsg(message);
-    jumpToLow();
-}
-
-/**
  * 显示用户消息
  * @param data
  */
@@ -322,9 +310,10 @@ function handleMessage(data) {
             showUserMsg(data);
             break;
         case 'SYSTEM':
+            showSystemMsg(data.message)
             break;
         case 'REVOKE':
-            showRevokeMessage(data);
+            showRevokeMsg(data);
             break;
         case 'ROBOT':
             showRobotMsg(data);
@@ -338,7 +327,7 @@ function handleMessage(data) {
  * 显示撤回消息信息
  * @param data
  */
-function showRevokeMessage(data) {
+function showRevokeMsg(data) {
     var obj = document.getElementById(data.revokeMessageId);
     if (obj) {
         obj.remove();
@@ -354,6 +343,7 @@ function showRevokeMessage(data) {
 function showSystemMsg(message) {
     var li = '<li class="text-center join_li" id="join_message">' + message + '</li>';
     $("#show_content").append(li);
+    jumpToLow();
 }
 
 
@@ -582,7 +572,7 @@ function getUserIdByName(name) {
 
     for (var i = 0; i < onlineUserList.length; i++) {
         var obj = onlineUserList[i];
-        if (obj.userId != uid && obj.username.indexOf(name) != -1) {
+        if (obj.userId !== uid && obj.username === name) {
             return obj.userId;
         }
     }

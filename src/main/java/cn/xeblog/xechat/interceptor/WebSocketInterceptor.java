@@ -3,6 +3,7 @@ package cn.xeblog.xechat.interceptor;
 import cn.xeblog.xechat.constant.UserStatusConstant;
 import cn.xeblog.xechat.domain.mo.User;
 import cn.xeblog.xechat.utils.SensitiveWordUtils;
+import cn.xeblog.xechat.utils.UUIDUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -38,7 +39,7 @@ public class WebSocketInterceptor implements ChannelInterceptor {
 
         if (StompCommand.CONNECT.equals(stompHeaderAccessor.getCommand())) {
             User user = new User();
-            user.setUserId(UUID.randomUUID().toString());
+            user.setUserId(UUIDUtils.create());
             user.setUsername(SensitiveWordUtils.loveChina(stompHeaderAccessor.getFirstNativeHeader("username")));
             user.setAvatar(stompHeaderAccessor.getFirstNativeHeader("avatar"));
             user.setAddress(stompHeaderAccessor.getFirstNativeHeader("address"));

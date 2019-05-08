@@ -11,13 +11,11 @@ import cn.xeblog.xechat.enums.CodeEnum;
 import cn.xeblog.xechat.enums.MessageTypeEnum;
 import cn.xeblog.xechat.enums.inter.Code;
 import cn.xeblog.xechat.exception.ErrorCodeException;
-import cn.xeblog.xechat.service.ChatRecordService;
 import cn.xeblog.xechat.service.MessageService;
 import cn.xeblog.xechat.service.RobotService;
 import cn.xeblog.xechat.utils.CheckUtils;
 import cn.xeblog.xechat.utils.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -79,10 +77,15 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void sendMessageToRobot(String subAddress, String message, User user) throws Exception {
         log.info("user: {} -> 发送消息到机器人 -> {}", user, message);
-        String robotMessage = robotService.sendMessage(message.replaceFirst(RobotConstant.prefix, ""));
+        String robotMessage = robotService.sendMessage(user.getUserId(), message.replaceFirst(RobotConstant.prefix,
+                ""));
         log.info("机器人响应结果 -> {}", robotMessage);
+        sendRobotMessage(subAddress, robotMessage);
+    }
 
+    @Override
+    public void sendRobotMessage(String subAddress, String message) throws Exception {
         SpringUtils.getBean(this.getClass()).sendMessage(subAddress, new MessageVO(UserCache.getUser(RobotConstant.key),
-                robotMessage, MessageTypeEnum.ROBOT));
+                message, MessageTypeEnum.ROBOT));
     }
 }

@@ -1,9 +1,9 @@
 package cn.xeblog.xechat.service.impl;
 
 import cn.xeblog.xechat.constant.DateConstant;
-import cn.xeblog.xechat.constant.UserStatusConstant;
 import cn.xeblog.xechat.domain.dto.ChatRecordDTO;
 import cn.xeblog.xechat.domain.mo.User;
+import cn.xeblog.xechat.enums.MessageTypeEnum;
 import cn.xeblog.xechat.service.ChatRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -71,41 +71,16 @@ public class ChatRecordServiceImpl implements ChatRecordService {
 
         User user = chatRecordDTO.getUser();
         switch (chatRecordDTO.getType()) {
+            case ROBOT:
             case USER:
-                sb.append("#### [" + chatRecordDTO.getSendTime() + "] " + user.getUsername() + "("
-                        + user.getAddress() + ")：\r\n");
-
-                if (!StringUtils.isEmpty(chatRecordDTO.getImage())) {
-                    sb.append("> ![](" + chatRecordDTO.getImage() + ")\r\n");
-                }
-                if (!StringUtils.isEmpty(chatRecordDTO.getMessage())) {
-                    sb.append("> " + chatRecordDTO.getMessage() + "\r\n");
-                }
+                formatUserMsg(sb, chatRecordDTO);
                 break;
             case SYSTEM:
-                sb.append("#### [" + chatRecordDTO.getSendTime() + "] 系统消息：\r\n");
-
-                String action = "离开了聊天室！";
-                if (user.getStatus() == UserStatusConstant.ONLINE) {
-                    action = "进入了聊天室！";
-                }
-
-                sb.append("> " + user.getUsername() + action + "\r\n");
+                formatSystemMsg(sb, chatRecordDTO);
                 break;
             case REVOKE:
-                sb.append("#### [" + chatRecordDTO.getSendTime() + "] 系统消息：\r\n");
-                sb.append("> " + user.getUsername() + "撤回了一条消息！\r\n");
-                break;
-            case ROBOT:
-                sb.append("#### [" + chatRecordDTO.getSendTime() + "] [系统机器人] " + user.getUsername() + "("
-                        + user.getAddress() + ")：\r\n");
-
-                if (!StringUtils.isEmpty(chatRecordDTO.getImage())) {
-                    sb.append("> ![](" + chatRecordDTO.getImage() + ")\r\n");
-                }
-                if (!StringUtils.isEmpty(chatRecordDTO.getMessage())) {
-                    sb.append("> " + chatRecordDTO.getMessage() + "\r\n");
-                }
+                chatRecordDTO.setMessage(user.getUsername() + "撤回了一条消息！");
+                formatSystemMsg(sb, chatRecordDTO);
                 break;
             default:
                 break;
@@ -130,5 +105,36 @@ public class ChatRecordServiceImpl implements ChatRecordService {
         }
 
         return list;
+    }
+
+    /**
+     * 格式化系统类型的消息
+     *
+     * @param sb
+     * @param chatRecordDTO
+     */
+    private void formatSystemMsg(StringBuffer sb, ChatRecordDTO chatRecordDTO) {
+        sb.append("#### [" + chatRecordDTO.getSendTime() + "] 系统消息：\r\n");
+        sb.append("> " + chatRecordDTO.getMessage() + "\r\n");
+    }
+
+    /**
+     * 格式化用户类型的消息
+     *
+     * @param sb
+     * @param chatRecordDTO
+     */
+    private void formatUserMsg(StringBuffer sb, ChatRecordDTO chatRecordDTO) {
+        final User user = chatRecordDTO.getUser();
+        String tag = chatRecordDTO.getType() == MessageTypeEnum.ROBOT ? "[系统机器人] " : "";
+        sb.append("#### [" + chatRecordDTO.getSendTime() + "] " + tag + user.getUsername() + "("
+                + user.getAddress() + ")：\r\n");
+
+        if (!StringUtils.isEmpty(chatRecordDTO.getImage())) {
+            sb.append("> ![](" + chatRecordDTO.getImage() + ")\r\n");
+        }
+        if (!StringUtils.isEmpty(chatRecordDTO.getMessage())) {
+            sb.append("> " + chatRecordDTO.getMessage() + "\r\n");
+        }
     }
 }

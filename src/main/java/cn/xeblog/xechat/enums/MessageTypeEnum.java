@@ -10,6 +10,5 @@ public enum MessageTypeEnum {
     SYSTEM,
     USER,
     REVOKE,
-    ROBOT,
-    DYNAMIC
+    ROBOT
 }

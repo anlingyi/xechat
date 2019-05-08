@@ -68,7 +68,7 @@ public class XeChatController {
             throw new ErrorCodeException(CodeEnum.INVALID_PARAMETERS);
         }
 
-        messageService.sendMessage(StompConstant.SUB_USER, new MessageVO(user, messageRO.getMessage(),
+        messageService.sendMessageToUser(messageRO.getReceiver(), new MessageVO(user, messageRO.getMessage(),
                 messageRO.getImage(), MessageTypeEnum.USER));
     }
 

@@ -22,9 +22,6 @@ public class TuRingRobotServiceImplTest {
 
     @Test
     public void sendMessage() {
-//        System.out.println(tuRingRobotService.sendMessage("杭州天气"));
-//        System.out.println(tuRingRobotService.sendMessage("杭州附近的酒店"));
-//        System.out.println(tuRingRobotService.sendMessage("最新新闻"));
-        System.out.println(tuRingRobotService.sendMessage("你长啥样"));
+        System.out.println(tuRingRobotService.sendMessage("123456", "你长啥样"));
     }
 }

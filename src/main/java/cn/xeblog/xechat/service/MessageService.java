@@ -48,4 +48,13 @@ public interface MessageService {
      */
     void sendMessageToRobot(String subAddress, String message, User user) throws Exception;
 
+    /**
+     * 发送机器人消息
+     *
+     * @param subAddress 消息订阅地址
+     * @param message    消息文本
+     * @throws Exception
+     */
+    void sendRobotMessage(String subAddress, String message) throws Exception;
+
 }

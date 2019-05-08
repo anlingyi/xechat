@@ -1,6 +1,7 @@
 package cn.xeblog.xechat.domain.vo;
 
 import cn.xeblog.xechat.domain.mo.User;
+import cn.xeblog.xechat.enums.MessageTypeEnum;
 import lombok.*;
 
 import java.io.Serializable;
@@ -30,4 +31,8 @@ public class DynamicMsgVo extends MessageVO implements Serializable {
      */
     private List<User> onlineUserList;
 
+    @Override
+    public MessageTypeEnum getType() {
+        return MessageTypeEnum.SYSTEM;
+    }
 }

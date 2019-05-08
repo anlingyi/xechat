@@ -39,9 +39,9 @@ public class TuRingRobotServiceImpl implements RobotService {
     private String apiKey;
 
     @Override
-    public String sendMessage(String text) {
+    public String sendMessage(String userId, String text) {
         ResponseEntity<JSONObject> resp = restTemplate.exchange(apiUrl, HttpMethod.POST,
-                buildHttpEntity(text), JSONObject.class);
+                buildHttpEntity(userId, text), JSONObject.class);
 
         return parseData(resp);
     }
@@ -49,10 +49,11 @@ public class TuRingRobotServiceImpl implements RobotService {
     /**
      * 构建请求实体
      *
+     * @param userId
      * @param text
      * @return
      */
-    private HttpEntity buildHttpEntity(String text) {
+    private HttpEntity buildHttpEntity(String userId, String text) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -64,7 +65,7 @@ public class TuRingRobotServiceImpl implements RobotService {
 
         JSONObject userInfo = new JSONObject();
         userInfo.put("apiKey", apiKey);
-        userInfo.put("userId", "123456789");
+        userInfo.put("userId", userId);
 
         JSONObject body = new JSONObject();
         body.put("reqType", 0);

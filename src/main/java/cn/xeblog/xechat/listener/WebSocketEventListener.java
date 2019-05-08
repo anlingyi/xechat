@@ -1,13 +1,13 @@
 package cn.xeblog.xechat.listener;
 
 import cn.xeblog.xechat.cache.UserCache;
+import cn.xeblog.xechat.constant.MessageConstant;
 import cn.xeblog.xechat.constant.StompConstant;
 import cn.xeblog.xechat.constant.UserStatusConstant;
 import cn.xeblog.xechat.domain.mo.User;
 import cn.xeblog.xechat.domain.vo.DynamicMsgVo;
 import cn.xeblog.xechat.domain.vo.MessageVO;
 import cn.xeblog.xechat.enums.CodeEnum;
-import cn.xeblog.xechat.enums.MessageTypeEnum;
 import cn.xeblog.xechat.exception.ErrorCodeException;
 import cn.xeblog.xechat.service.MessageService;
 import cn.xeblog.xechat.utils.CheckUtils;
@@ -74,7 +74,7 @@ public class WebSocketEventListener {
         UserCache.removeUser(userId);
 
         // 广播离线消息
-        sendMessage(buildMessageVo(user));
+        sendMessage(buildMessageVo(user, MessageConstant.OFFLINE_MESSAGE));
         log.debug("广播离线消息 -> {}", user);
     }
 
@@ -100,7 +100,9 @@ public class WebSocketEventListener {
                 }
 
                 // 广播上线消息
-                sendMessage(buildMessageVo(user));
+                sendMessage(buildMessageVo(user, MessageConstant.ONLINE_MESSAGE));
+                // 发送机器人欢迎消息
+                sendRobotMessage(String.format(MessageConstant.ROBOT_WELCOME_MESSAGE, user.getUsername()));
                 log.debug("广播上线消息 -> {}", user);
             }
 
@@ -113,10 +115,10 @@ public class WebSocketEventListener {
      * @param user
      * @return
      */
-    private MessageVO buildMessageVo(User user) {
+    private MessageVO buildMessageVo(User user, String message) {
         DynamicMsgVo dynamicMsgVo = new DynamicMsgVo();
-        dynamicMsgVo.setType(MessageTypeEnum.SYSTEM);
         dynamicMsgVo.setUser(user);
+        dynamicMsgVo.setMessage(String.format(message, user.getUsername()));
         dynamicMsgVo.setOnlineCount(UserCache.getOnlineCount());
         dynamicMsgVo.setOnlineUserList(UserCache.listUser());
 
@@ -132,4 +134,13 @@ public class WebSocketEventListener {
         messageService.sendMessage(StompConstant.SUB_STATUS, messageVO);
     }
 
+    /**
+     * 发送机器人消息
+     *
+     * @param message
+     * @throws Exception
+     */
+    private void sendRobotMessage(String message) throws Exception {
+        messageService.sendRobotMessage(StompConstant.SUB_CHAT_ROOM, message);
+    }
 }

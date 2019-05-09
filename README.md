@@ -192,3 +192,106 @@ chatrecord.password=c85715fec7827f3b388af185b8e7db77
 
 ![](https://i.loli.net/2019/04/06/5ca83f7252659.png)
 
+# v1.2更新
+
+## 接入图灵机器人
+
+> 图灵机器人官网 [http://www.turingapi.com](http://www.turingapi.com)  
+> API文档 [https://www.kancloud.cn/turing/www-tuling123-com/718227](https://www.kancloud.cn/turing/www-tuling123-com/718227)
+
+![xechat_v1.2.png](https://i.loli.net/2019/05/09/5cd3ed540d264.png)
+
+### 配置机器人
+
+#### 修改图灵ApiKey
+
+![turing_apikey.png](https://i.loli.net/2019/05/09/5cd3fa34df040.png)
+
+`application.properties` 配置文件里修改 `turing.apiKey` 的值
+
+```
+#图灵apikey
+turing.apiKey=xxx
+```
+
+### 修改机器人信息
+
+修改 `cn.xeblog.xechat.constant.RobotConstant` 类中对应常量
+
+```
+package cn.xeblog.xechat.constant;
+
+/**
+ * 机器人相关常量
+ *
+ * @author yanpanyi
+ * @date 2019/4/10
+ */
+public interface RobotConstant {
+    /**
+     * 存储的key
+     */
+    String key = "robot";
+    /**
+     * 触发机器人聊天的消息前缀
+     */
+    String prefix = "#";
+    /**
+     * 机器人名称
+     */
+    String name = "小小毅";
+    /**
+     * 机器人头像
+     */
+    String avatar = "./images/avatar/robot.jpeg";
+    /**
+     * 机器人地理位置
+     */
+    String address = "火星";
+}
+```
+
+### 修改机器人欢迎信息
+
+修改 `cn.xeblog.xechat.constant.MessageConstant` 类中对应常量
+
+```
+package cn.xeblog.xechat.constant;
+
+/**
+ * 消息模板
+ *
+ * @author anlingyi
+ * @date 2019/5/7
+ */
+public interface MessageConstant {
+    /**
+     * 进入聊天室广播消息
+     */
+    String ONLINE_MESSAGE = "%s进入了聊天室";
+    /**
+     * 离开聊天室广播消息
+     */
+    String OFFLINE_MESSAGE = "%s离开了聊天室";
+    /**
+     * 机器人欢迎消息
+     */
+    String ROBOT_WELCOME_MESSAGE = "@%s 欢迎来到聊天室！消息内容以'#'开头的我就能收到哦（PS：双击我的头像与我聊天），" +
+            "随时来撩我呀！";
+}
+
+```
+
+### 实际效果
+
+![xechat_v1.2_1.png](https://i.loli.net/2019/05/09/5cd4175b9b284.png)
+
+![xechat_v1.2_2.png](https://i.loli.net/2019/05/09/5cd4175b98e71.png)
+
+![xechat_v1.2_3.png](https://i.loli.net/2019/05/09/5cd4175b9fb63.png)
+
+![xechat_v1.2_4.png](https://i.loli.net/2019/05/09/5cd4175bb280f.png)
+
+![xechat_v1.2_5.png](https://i.loli.net/2019/05/09/5cd4175bacd75.png)
+
+![靓仔语塞.gif](https://i.loli.net/2019/05/09/5cd4196fd7e4c.gif)

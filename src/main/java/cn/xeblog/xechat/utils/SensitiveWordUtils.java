@@ -36,8 +36,6 @@ public class SensitiveWordUtils {
 
     /**
      * 读取敏感词
-     *
-     * @return
      */
     private static void readSensitiveWords() {
         keyWords = new HashSet<>();
@@ -85,7 +83,6 @@ public class SensitiveWordUtils {
      * 构建敏感词节点
      *
      * @param keyWord
-     * @return
      */
     private static void buildSensitiveWordNode(String keyWord) {
         SensitiveWordNode nowNode = rootNode;
@@ -105,7 +102,7 @@ public class SensitiveWordUtils {
      * 判断是否存在敏感词
      *
      * @param text
-     * @return
+     * @return true:存在敏感词 false:未存在敏感词
      */
     public static boolean hasSensitiveWord(String text) {
         if (StringUtils.isEmpty(text)) {
@@ -134,7 +131,7 @@ public class SensitiveWordUtils {
                 sb.append(nowNode.getKey());
 
                 if (nowNode.isEnd()) {
-                    log.debug("[{}] => 存在敏感词 -> {}", text, sb.toString());
+                    log.info("[{}] => 存在敏感词 -> {}", text, sb.toString());
                     return true;
                 }
             }
@@ -152,7 +149,7 @@ public class SensitiveWordUtils {
      * 热爱祖国，热爱人民
      *
      * @param text
-     * @return
+     * @return 如果存在敏感词则返回处理后的结果，否则直接返回原内容
      */
     public static String loveChina(String text) {
         if (hasSensitiveWord(text)) {
@@ -166,9 +163,10 @@ public class SensitiveWordUtils {
      * 清除非法字符
      *
      * @param str
+     * @return 返回清除非法字符后的结果
      */
     private static String invalidClear(String str) {
-        String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？·\\s*|\t|\r|\n]";
+        String regEx = "[`~!@#$%^&*()+=|{}':;,\\[\\].<>/?！￥…（）—【】｛｝｜／《》‘；：＋——＊&……％$＃@！～”“’。，、？·\\s\t\r\n]";
         Matcher m = Pattern.compile(regEx).matcher(str);
         return m.replaceAll("").trim();
     }

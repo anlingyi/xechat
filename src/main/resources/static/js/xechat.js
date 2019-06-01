@@ -168,7 +168,7 @@ function sendToChatRoom() {
     }
 
     var data = {
-        "message": htmlEncode(content)
+        "message": content
     };
 
     var pub = '/chatRoom';

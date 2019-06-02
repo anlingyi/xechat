@@ -2,6 +2,7 @@ package cn.xeblog.xechat.aop;
 
 import cn.xeblog.xechat.domain.dto.ChatRecordDTO;
 import cn.xeblog.xechat.domain.vo.MessageVO;
+import cn.xeblog.xechat.enums.MessageTypeEnum;
 import cn.xeblog.xechat.service.ChatRecordService;
 import cn.xeblog.xechat.utils.SensitiveWordUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -46,8 +47,12 @@ public class ChatRecordAspect {
         }
 
         Assert.notNull(messageVO, "方法必需以MessageVO类或该类的子类作为参数");
-        // 敏感词处理
-        messageVO.setMessage(SensitiveWordUtils.loveChina(messageVO.getMessage()));
+
+        if (messageVO.getType() == MessageTypeEnum.USER) {
+            // 对于用于类型的消息做敏感词处理
+            messageVO.setMessage(SensitiveWordUtils.loveChina(messageVO.getMessage()));
+        }
+
         log.debug("添加聊天记录 -> {}", messageVO);
         chatRecordService.addRecord(ChatRecordDTO.toChatRecordDTO(messageVO));
     }

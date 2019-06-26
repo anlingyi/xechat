@@ -16,7 +16,7 @@ import java.util.Arrays;
 /**
  * restTemplate配置
  *
- * @author: yanpanyi
+ * @author yanpanyi
  * @date 2019/4/9
  **/
 @Configuration
@@ -49,9 +49,9 @@ public class RestTemplateConfig {
     @Bean(name = "restTemplate")
     public RestTemplate restTemplate() {
         PoolingHttpClientConnectionManager connMgr = new PoolingHttpClientConnectionManager();
-        //总连接数
+        // 总连接数
         connMgr.setMaxTotal(poolSize + 1);
-        //同路由的并发数
+        // 同路由的并发数
         connMgr.setDefaultMaxPerRoute(poolSize);
         CloseableHttpClient httpClient = HttpClients.custom().setConnectionManager(connMgr).build();
         // httpClient连接配置，底层是配置RequestConfig
@@ -70,7 +70,7 @@ public class RestTemplateConfig {
 
         MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
         mappingJackson2HttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON,
-                MediaType.APPLICATION_OCTET_STREAM));
+                MediaType.APPLICATION_OCTET_STREAM, MediaType.TEXT_PLAIN));
         restTemplate.getMessageConverters().add(mappingJackson2HttpMessageConverter);
 
         return restTemplate;

@@ -7,6 +7,7 @@ import cn.xeblog.xechat.service.UploadService;
 import cn.xeblog.xechat.utils.CheckUtils;
 import cn.xeblog.xechat.utils.UUIDUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,8 +54,10 @@ public class UploadServiceImpl implements UploadService {
     }
 
     private File getFile(MultipartFile multipartFile) throws Exception {
-        type = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().
-                indexOf("."));
+        String originalFilename = multipartFile.getOriginalFilename();
+        if (!StringUtils.isEmpty(originalFilename)) {
+            type = originalFilename.substring(originalFilename.lastIndexOf("."));
+        }
 
         if (!CheckUtils.isImage(type)) {
             throw new ErrorCodeException(CodeEnum.UPLOADED_FILE_IS_NOT_AN_IMAGE);

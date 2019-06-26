@@ -16,15 +16,15 @@ public interface ChatRecordService {
     /**
      * 添加聊天记录
      *
-     * @param chatRecordDTO
+     * @param chatRecordDTO 聊天记录对象
      */
     void addRecord(ChatRecordDTO chatRecordDTO);
 
     /**
      * 聊天记录列表
      *
-     * @return
-     * @throws Exception
+     * @param directoryName 目录名
+     * @return 聊天记录列表
      */
-    List<HashMap<String, String>> listRecord();
+    List<HashMap<String, Object>> listRecord(String directoryName);
 }

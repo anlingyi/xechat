@@ -14,7 +14,6 @@ public interface RobotService {
      * @param userId 发送人userId
      * @param text 发送的消息内容
      * @return 机器人的答复信息
-     * @throws Exception
      */
     String sendMessage(String userId, String text);
 }

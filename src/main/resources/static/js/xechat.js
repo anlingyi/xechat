@@ -610,23 +610,43 @@ var token;
 /**
  * 获取聊天记录列表
  */
-function listRecord() {
+function listRecord(name) {
+    var def_id = 'recordList';
+    var id = '';
+    var param = '';
+    if (name != '') {
+        def_id = name;
+        id = name + '_';
+        param = id.replace(/\_/g, '/');
+    }
+
     $.ajax({
         type: "GET",
         url: "/api/record",
         headers: {
             "token": token
         },
+        data: {
+            "directoryName": param
+        },
         dataType: "json",
         success: function (data) {
             codeMapping(data);
             if (data.code === 200) {
+                $('#' + def_id).html('');
                 $('#passwordModel').modal('hide');
                 $('#record').show();
                 var list = data.data.list;
                 for (var i = 0; i < list.length; i++) {
                     var obj = list[i];
-                    $('#recordList').append('<li onclick="readContent(this)" data-url="' + obj.url + '">' + obj.name + '</li>');
+                    if (obj.file) {
+                        $('#' + def_id).append('<li class="file" onclick="readContent(this)" data-url="' + obj.url + '">' + obj.name + '</li>');
+                    } else {
+                        var dir_id = id + obj.name;
+                        var unit = obj.name.length === 4 ? '年' : '月';
+                        $('#' + def_id).append('<li class="dire" onclick="direDisplay(this)" data-id="' + dir_id + '">' + obj.name + unit + '</li>');
+                        $('#' + def_id).append('<ul id="' + dir_id + '"></ul>')
+                    }
                 }
             }
         }
@@ -660,7 +680,7 @@ function checkPassword() {
         alert("请输入访问密码！！！");
     } else {
         token = btoa(val);
-        listRecord();
+        listRecord('', '');
     }
 }
 
@@ -696,4 +716,19 @@ function showToRobot() {
         return;
     }
     $('#content').val('#' + val);
+}
+
+/**
+ * 目录显示
+ *
+ * @param id
+ */
+function direDisplay(e) {
+    var id = $(e).data('id');
+    if ($('#' + id).is(':hidden')) {
+        listRecord(id);
+        $('#' + id).show();
+        return;
+    }
+    $('#' + id).hide();
 }

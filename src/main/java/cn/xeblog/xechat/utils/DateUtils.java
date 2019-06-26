@@ -35,4 +35,17 @@ public class DateUtils {
         Assert.notNull(format, "日期格式不能为空");
         return DateFormatUtils.format(timestamp, format);
     }
+
+    /**
+     * 格式化指定日期对象
+     *
+     * @param date   需要格式化的日期对象
+     * @param format 日期格式
+     * @return 返回格式化后的日期字符串
+     */
+    public static String getDate(Date date, String format) {
+        Assert.notNull(date, "日期对象不能为空");
+        Assert.notNull(format, "日期格式不能为空");
+        return DateFormatUtils.format(date, format);
+    }
 }

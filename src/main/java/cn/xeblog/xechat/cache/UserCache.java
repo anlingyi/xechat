@@ -3,11 +3,9 @@ package cn.xeblog.xechat.cache;
 import cn.xeblog.xechat.constant.RobotConstant;
 import cn.xeblog.xechat.constant.UserStatusConstant;
 import cn.xeblog.xechat.domain.mo.User;
-import cn.xeblog.xechat.utils.SensitiveWordUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -21,7 +19,7 @@ public class UserCache {
     /**
      * 在线用户列表
      */
-    private static ConcurrentHashMap<String, User> userMap = new ConcurrentHashMap<>(32);
+    private final static ConcurrentHashMap<String, User> USER_MAP = new ConcurrentHashMap<>(32);
 
     static {
         // 初始化机器人信息
@@ -34,58 +32,58 @@ public class UserCache {
         user.setStatus(UserStatusConstant.ONLINE);
 
         // 将机器人加入到用户列表
-        userMap.put(uid, user);
+        USER_MAP.put(uid, user);
     }
 
     /**
      * 添加用户
      *
-     * @param key
-     * @param user
+     * @param key 存储的键
+     * @param user 存储的user对象
      */
     public static void addUser(String key, User user) {
-        if (null != getUser(key)) {
+        if (USER_MAP.containsKey(key)) {
             return;
         }
 
-        userMap.put(key, user);
+        USER_MAP.put(key, user);
     }
 
     /**
      * 获取用户
      *
-     * @param key
-     * @return
+     * @param key 存储的键
+     * @return user对象
      */
     public static User getUser(String key) {
-        return userMap.get(key);
+        return USER_MAP.get(key);
     }
 
     /**
      * 删除用户
      *
-     * @param key
+     * @param key 存储的键
      */
     public static void removeUser(String key) {
-        userMap.remove(key);
+        USER_MAP.remove(key);
     }
 
     /**
      * 获取在线用户数
      *
-     * @return
+     * @return 在线人数
      */
     public static int getOnlineCount() {
-        return userMap.size();
+        return USER_MAP.size();
     }
 
     /**
      * 获取所有的在线用户
      *
-     * @return
+     * @return 在线人数列表
      */
     public static List<User> listUser() {
-        return new ArrayList<>(userMap.values());
+        return new ArrayList<>(USER_MAP.values());
     }
 
 }

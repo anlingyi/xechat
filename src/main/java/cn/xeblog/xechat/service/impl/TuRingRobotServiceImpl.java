@@ -49,9 +49,9 @@ public class TuRingRobotServiceImpl implements RobotService {
     /**
      * 构建请求实体
      *
-     * @param userId
-     * @param text
-     * @return
+     * @param userId 用户id
+     * @param text 消息内容
+     * @return HttpEntity
      */
     private HttpEntity buildHttpEntity(String userId, String text) {
         HttpHeaders headers = new HttpHeaders();
@@ -78,8 +78,8 @@ public class TuRingRobotServiceImpl implements RobotService {
     /**
      * 解析响应数据
      *
-     * @param resp
-     * @return
+     * @param resp 响应数据
+     * @return 解析后的字符串
      */
     private String parseData(ResponseEntity<JSONObject> resp) {
         if (resp.getStatusCodeValue() != HttpStatus.SC_OK) {
@@ -107,15 +107,26 @@ public class TuRingRobotServiceImpl implements RobotService {
                     break;
                 case "url":
                     String url = values.getString("url");
-                    sb.append("<a href='" + url + "' target='_blank'>" + url + "</a><br/>");
+                    sb.append("<a href='");
+                    sb.append(url);
+                    sb.append("' target='_blank'>");
+                    sb.append(url);
+                    sb.append("</a><br/>");
                     break;
                 case "news":
                     news = values.getJSONArray("news");
                     for (int j = 0; j < news.size(); j++) {
                         newsInfo = news.getJSONObject(j);
-                        sb.append("<br/><a href='" + newsInfo.getString("detailurl") + "' target='_blank'>" +
-                                (j + 1) + ". " + newsInfo.getString("name") + "</a>");
-                        sb.append("<br/><img src='" + newsInfo.getString("icon") + "' >");
+                        sb.append("<br/><a href='");
+                        sb.append(newsInfo.getString("detailurl"));
+                        sb.append("' target='_blank'>");
+                        sb.append(j + 1);
+                        sb.append(". ");
+                        sb.append(newsInfo.getString("name"));
+                        sb.append("</a>");
+                        sb.append("<br/><img src='");
+                        sb.append(newsInfo.getString("icon"));
+                        sb.append("' >");
                     }
                     break;
                 default:

@@ -7,6 +7,7 @@ import cn.xeblog.xechat.enums.MessageTypeEnum;
 import cn.xeblog.xechat.service.ChatRecordService;
 import cn.xeblog.xechat.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -174,7 +175,7 @@ public class ChatRecordServiceImpl implements ChatRecordService {
         }
         if (!StringUtils.isEmpty(chatRecordDTO.getMessage())) {
             sb.append("> ");
-            sb.append(chatRecordDTO.getMessage());
+            sb.append(StringEscapeUtils.escapeHtml4(chatRecordDTO.getMessage()));
             sb.append("\r\n");
         }
     }

@@ -24,6 +24,9 @@ public class CheckUtils {
      */
     private static final long MESSAGE_EXPIRE_DATE = 180000;
 
+    /**
+     * 设置的访问密码
+     */
     private static String password;
 
     @Value("${chatrecord.password}")
@@ -34,8 +37,8 @@ public class CheckUtils {
     /**
      * 校验撤消的消息id
      *
-     * @param messageId
-     * @return
+     * @param messageId 消息id
+     * @throws ErrorCodeException
      */
     public static void checkMessageId(String messageId, String userId) throws ErrorCodeException {
         if (StringUtils.isEmpty(messageId)) {
@@ -57,7 +60,7 @@ public class CheckUtils {
     /**
      * 判断是否是图片
      *
-     * @param type
+     * @param type 类型
      * @return true是图片 false不是图片
      */
     public static boolean isImage(String type) {
@@ -68,8 +71,8 @@ public class CheckUtils {
     /**
      * 校验token
      *
-     * @param token
-     * @return
+     * @param token 访问令牌
+     * @return true:合法 false:不合法
      */
     public static boolean checkToken(String token) {
         return StringUtils.isEmpty(token) ? false : password.equals(DigestUtils.md5Hex(token));
@@ -78,8 +81,8 @@ public class CheckUtils {
     /**
      * 校验用户信息
      *
-     * @param user
-     * @return
+     * @param user 用户对象
+     * @return true:合法 false:不合法
      */
     public static boolean checkUser(User user) {
         return null != user && StringUtils.isNotEmpty(user.getUserId());
@@ -88,8 +91,8 @@ public class CheckUtils {
     /**
      * 校验消息内容
      *
-     * @param message
-     * @return
+     * @param message 消息内容
+     * @return true:合法 false:不合法
      */
     public static boolean checkMessage(String message) {
         return StringUtils.isNotEmpty(message);
@@ -98,8 +101,8 @@ public class CheckUtils {
     /**
      * 校验图片地址
      *
-     * @param image
-     * @return
+     * @param image 图片访问地址
+     * @return true:合法 false:不合法
      */
     public static boolean checkImageUrl(String image) {
         return StringUtils.isNotEmpty(image);
@@ -108,8 +111,8 @@ public class CheckUtils {
     /**
      * 校验消息请求对象
      *
-     * @param messageRO
-     * @return
+     * @param messageRO 消息请求对象
+     * @return true:合法 false:不合法
      */
     public static boolean checkMessageRo(MessageRO messageRO) {
         if (messageRO == null) {
@@ -122,8 +125,8 @@ public class CheckUtils {
     /**
      * 校验订阅地址
      *
-     * @param subAddress
-     * @return
+     * @param subAddress 订阅地址
+     * @return true:合法 false:不合法
      */
     public static boolean checkSubAddress(String subAddress) {
         return StringUtils.isNotEmpty(subAddress);
@@ -132,8 +135,8 @@ public class CheckUtils {
     /**
      * 校验接收者
      *
-     * @param receiver
-     * @return
+     * @param receiver 接收消息的用户id数组
+     * @return true:合法 false:不合法
      */
     public static boolean checkReceiver(String[] receiver) {
         return ArrayUtils.isNotEmpty(receiver);

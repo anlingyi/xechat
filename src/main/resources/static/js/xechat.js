@@ -8,6 +8,16 @@ var stompClient = null;
 var onlineUserList;
 var address = '未知地区';
 
+var title = document.title;
+// 打开通知
+var openNotice = true;
+// 通知权限，0不支持通知 1允许通知 2不允许通知 3未获取权限
+var permission = 3;
+// 最新的消息数量
+var newMsgTotal = 0;
+// 窗口可见
+var visible = true;
+
 // 页面加载完成后
 window.onload = function () {
     init();
@@ -19,6 +29,20 @@ window.onload = function () {
         // 发送信息
         sendToChatRoom();
     });
+    // 监听窗口切换
+    document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "hidden") {
+            // 窗口不可见
+            visible = false;
+        } else if (document.visibilityState === "visible") {
+            // 窗口可见
+            visible = true;
+            newMsgTotal = 0;
+            document.title = title;
+        }
+    });
+    // 请求获取消息通知权限
+    requestNoticePermission();
 }
 
 // 监听窗口关闭事件，当窗口关闭时，主动去关闭stomp连接
@@ -34,6 +58,8 @@ function connect() {
     config();
     // 订阅地址
     sub();
+    // 通过标题进行通知
+    msgNoticeByTitle();
 }
 
 /**
@@ -68,8 +94,8 @@ function sub() {
         // 聊天室动态订阅
         stompClient.subscribe('/topic/status', function (data) {
             var obj = getData(data.body);
+            handleMessage(obj);
             showOnlineNum(obj.onlineCount);
-            showSystemMsg(obj.message);
             showUserList(obj.onlineUserList);
         });
 
@@ -305,12 +331,13 @@ function jumpToLow() {
  * @param data
  */
 function handleMessage(data) {
+    var msg = data.message;
     switch (data.type) {
         case 'USER':
             showUserMsg(data);
             break;
         case 'SYSTEM':
-            showSystemMsg(data.message)
+            showSystemMsg(msg);
             break;
         case 'REVOKE':
             showRevokeMsg(data);
@@ -321,6 +348,9 @@ function handleMessage(data) {
         default:
             break;
     }
+
+    // 消息通知
+    msgNotice(data);
 }
 
 /**
@@ -731,4 +761,114 @@ function direDisplay(e) {
         return;
     }
     $('#' + id).hide();
+}
+
+/**
+ * 不在当前窗口时，通过标题显示最新的消息数量
+ */
+function msgNoticeByTitle() {
+    if (!openNotice || visible) {
+        // 未开启通知或窗口可见，不进行提醒
+        return;
+    }
+
+    // 提示音
+    beep();
+    // 窗口不可见显示提醒
+    document.title = '[' + (++newMsgTotal) + '条新消息]' + title;
+}
+
+/**
+ * 通过浏览器的消息通知来推送消息
+ * 兼容性差（Safari、Chrome等浏览器对于pc端基本支持）
+ * @param data
+ */
+function msgNoticeByBrowser(data) {
+    if (permission == 3) {
+        requestNoticePermission();
+    }
+
+    if (permission == 1) {
+        // 创建通知
+        var notice = createNotice(data);
+        notice.onclick = function () {
+            // 切换浏览器窗口到当前界面
+            window.focus();
+        }
+    }
+}
+
+/**
+ * 播放提示音
+ */
+function beep() {
+    var beep = document.getElementById('beep');
+    if (beep.src == '') {
+        beep.src = './sounds/qq.mp3';
+    }
+    beep.play();
+}
+
+/**
+ * 创建一条消息通知
+ * @param data
+ * @returns {Notification}
+ */
+function createNotice(data) {
+    var t = '系统消息';
+    var msg = data.message;
+    var user = data.user;
+    var type = data.type;
+    if (type == 'USER' || type == 'ROBOT') {
+        t = user.username;
+        if (msg == null) {
+            msg = "[图片]";
+        }
+    } else if (type == 'REVOKE') {
+        msg = user.username + '撤回了一条消息！';
+    }
+
+    return new Notification('新的消息！' + title, {
+        body: t + '：' + msg,
+        icon: user.avatar
+    });
+}
+
+/**
+ * 请求通知权限
+ */
+function requestNoticePermission() {
+    var flag = window.Notification;
+    if (flag) {
+        Notification.requestPermission(function (perm) {
+            switch (perm) {
+                case "granted":
+                    permission = 1;
+                    break;
+                case "denied":
+                    permission = 2;
+                    break;
+                default:
+                    permission = 3;
+                    break;
+            }
+        });
+    } else {
+        console.log('该浏览器暂不支持通知！');
+        permission = 0;
+    }
+}
+
+/**
+ * 消息通知
+ * @param data
+ */
+function msgNotice(data) {
+    // 已开启通知且窗口不可见才进行消息通知
+    if (openNotice && !visible) {
+        // 通过标题通知
+        msgNoticeByTitle();
+        // 通过浏览器的消息通知支持进行通知
+        msgNoticeByBrowser(data);
+    }
 }

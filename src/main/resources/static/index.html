@@ -41,8 +41,19 @@
            class="col-xs-2 text-right"> </a> <a class="text-center col-xs-8"
                                                 target="_blank">聊天室（<font color="orange" id="online_num"><img
             src="./images/loader.gif" width="15" height="15"></font>）</a>
-        <div class="dropdown exit" onclick="exit()">
-            <i class="glyphicon glyphicon-log-out dropdown-toggle"></i>
+        <div class="dropdown settings">
+            <i class="glyphicon glyphicon-cog dropdown-toggle" id="settings" data-toggle="dropdown"></i>
+            <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="settings" id="settings-menu">
+                <li><input type="checkbox" checked id="checkNotice"/>&nbsp;<i
+                        class="glyphicon glyphicon-bell"></i><span>新消息通知</span></li>
+                <li><input type="checkbox" checked id="checkSound"/>&nbsp;<i
+                        class="glyphicon glyphicon-volume-up"></i><span>消息提示音</span></li>
+                <li class="divider"></li>
+                <li style="float: right;margin-right: 10px">
+                    <button type="button" class="btn btn-primary btn-xs" onclick="exit()">退出 <i
+                            class="glyphicon glyphicon-log-out dropdown-toggle"></i></button>
+                </li>
+            </ul>
         </div>
     </div>
     <div class="header"></div>

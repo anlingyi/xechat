@@ -325,7 +325,7 @@ li {
     white-space: nowrap;
 }
 
-.exit {
+.settings {
     position: absolute;
     right: 15px;
 }
@@ -412,4 +412,12 @@ li {
     font-size: 13px;
     background-color: rgba(255, 255, 255, 0.5);
     border-radius: 15px;
+}
+
+#settings-menu li {
+    margin-left: 10px;
+}
+
+#settings-menu li i, span {
+    font-size: 13px;
 }

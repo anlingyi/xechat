@@ -9,7 +9,7 @@ var onlineUserList;
 var address = '未知地区';
 
 var title = document.title;
-// 打开通知
+// 是否打开通知
 var openNotice = true;
 // 通知权限，0不支持通知 1允许通知 2不允许通知 3未获取权限
 var permission = 3;
@@ -17,12 +17,13 @@ var permission = 3;
 var newMsgTotal = 0;
 // 窗口可见
 var visible = true;
-// 是否关闭提示音
-var silent = false;
+// 是否打开提示音
+var opendSound = true;
 
 // 页面加载完成后
 window.onload = function () {
     init();
+    settings();
     $('#content').bind('keyup', showToUserList);
     // 页面加载完成监听回车事件
     document.getElementById("content").addEventListener("keydown", function (e) {
@@ -324,7 +325,7 @@ function showUserMsg(data) {
  * 跳到聊天界面最底下
  */
 function jumpToLow() {
-    $("ul").scrollTop($("ul")[1].scrollHeight);
+    $("ul").scrollTop($("ul")[2].scrollHeight);
 }
 
 /**
@@ -788,7 +789,7 @@ function msgNoticeByTitle() {
         return;
     }
 
-    if (!silent) {
+    if (opendSound) {
         // 提示音
         beep();
     }
@@ -886,4 +887,21 @@ function msgNotice(data) {
         // 通过浏览器的消息通知支持进行通知
         msgNoticeByBrowser(data);
     }
+}
+
+/**
+ * 设置相关
+ */
+function settings() {
+    var checkNotice = $('#checkNotice');
+    checkNotice.on('change', function () {
+        // 是否打开通知
+        openNotice = checkNotice.is(':checked');
+    });
+
+    var checkSound = $('#checkSound');
+    checkSound.on('change', function () {
+        // 是否打开提示音
+        opendSound = checkSound.is(':checked');
+    });
 }

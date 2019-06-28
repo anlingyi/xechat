@@ -22,12 +22,12 @@ import java.io.Serializable;
 public class ResponseVO implements Serializable {
 
     private static final long serialVersionUID = -5327212050370584991L;
-    private static final CodeEnum success = CodeEnum.SUCCESS;
+    private static final CodeEnum SUCCESS = CodeEnum.SUCCESS;
 
     /**
      * 响应码
      */
-    private int code;
+    private Integer code;
     /**
      * 响应数据
      */
@@ -40,18 +40,18 @@ public class ResponseVO implements Serializable {
     /**
      * 成功响应且带响应数据
      *
-     * @param data
+     * @param data 响应数据
      */
     public ResponseVO(Object data) {
-        this.code = success.getCode();
-        this.desc = success.getDesc();
+        this.code = SUCCESS.getCode();
+        this.desc = SUCCESS.getDesc();
         this.data = data;
     }
 
     /**
      * 只带响应code和desc
      *
-     * @param code
+     * @param code 响应code
      */
     public ResponseVO(Code code) {
         this.code = code.getCode();

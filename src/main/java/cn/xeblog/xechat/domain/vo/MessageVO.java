@@ -55,6 +55,21 @@ public class MessageVO implements Serializable {
      */
     private String sendTime;
 
+    /**
+     * 接收者
+     */
+    @Getter
+    @Setter
+    private String[] receiver;
+
+    public MessageVO(User user, String message, String image, MessageTypeEnum type, String[] receiver) {
+        this.user = user;
+        this.message = message;
+        this.image = image;
+        this.type = type;
+        this.receiver = receiver;
+    }
+
     public MessageVO(User user, String message, String image, MessageTypeEnum type) {
         this.user = user;
         this.message = message;

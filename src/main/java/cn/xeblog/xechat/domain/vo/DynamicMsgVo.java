@@ -4,7 +4,6 @@ import cn.xeblog.xechat.domain.mo.User;
 import cn.xeblog.xechat.enums.MessageTypeEnum;
 import lombok.*;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -17,9 +16,7 @@ import java.util.List;
 @Setter
 @ToString
 @NoArgsConstructor
-public class DynamicMsgVo extends MessageVO implements Serializable {
-
-    private static final long serialVersionUID = 6784139265883590057L;
+public class DynamicMsgVo extends MessageVO {
 
     /**
      * 在线人数

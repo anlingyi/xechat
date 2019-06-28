@@ -1,7 +1,6 @@
 @CHARSET "UTF-8";
 body {
     background-color: #f2f2f2;
-    font-family: 'Microsoft Yahei', 'Arial';
 }
 
 ul {
@@ -100,6 +99,10 @@ li {
     margin-left: 10px;
 }
 
+.content-reply-box li.even .reply-content {
+    float: right;
+}
+
 .content-reply-box li.odd .reply-content-box {
     margin-left: 60px;
 }
@@ -113,7 +116,7 @@ li {
     margin-top: 5px;
     display: block;
     text-align: center;
-    width: 50px;
+    width: 45px;
     white-space: nowrap;
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
@@ -142,6 +145,10 @@ li {
     border-radius: 4px;
     box-shadow: 0 0 5px #ccc;
     word-wrap: break-word;
+    width: fit-content;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    min-width: 200px;
 }
 
 .content-reply-box li.odd .arrow {
@@ -394,4 +401,15 @@ li {
 .toUserList a {
     color: #333;
     font-weight: normal;
+}
+
+.sys_message {
+    width: fit-content;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    margin: 0 auto;
+    padding: 0.35em 0.6em;
+    font-size: 13px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
 }

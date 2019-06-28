@@ -17,6 +17,8 @@ var permission = 3;
 var newMsgTotal = 0;
 // 窗口可见
 var visible = true;
+// 是否关闭提示音
+var silent = false;
 
 // 页面加载完成后
 window.onload = function () {
@@ -58,8 +60,6 @@ function connect() {
     config();
     // 订阅地址
     sub();
-    // 通过标题进行通知
-    msgNoticeByTitle();
 }
 
 /**
@@ -183,13 +183,14 @@ function sendToChatRoom() {
     showToUserList(content);
 
     var toUser = [uid];
-    var strs = content.split('@');
+    var names = content.split('@');
 
-    for (var i = 1; i < strs.length; i++) {
-        var index = strs[i].indexOf(' ');
-        var str = getUserIdByName(strs[i].substr(0, index != -1 ? index : strs[i].length));
-        if (str !== undefined && str !== '') {
-            toUser.push(str);
+    for (var i = 1; i < names.length; i++) {
+        var index = names[i].indexOf(' ');
+        var userId = getUserIdByName(names[i].substr(0, index != -1 ? index : names[i].length));
+        // userId不能是空的，且toUser数组中不存在该userId
+        if (userId !== undefined && userId !== '' && toUser.indexOf(userId) == -1) {
+            toUser.push(userId);
         }
     }
 
@@ -298,12 +299,12 @@ function showUserMsg(data) {
     var user = data.user;
     var isMe = user.userId === uid;
     var style_css = isMe ? 'even' : 'odd';
-    var event = isMe ? 'ondblclick=revokeMessage("' + data.messageId + '")' : '';
+    var event = isMe ? 'ondblclick=revokeMessage(this)' : '';
     var event2 = isMe ? '' : 'ondblclick=showToUser("' + user.username + '")';
 
     var showMessage = data.message == null ? '' : htmlEncode(data.message);
     var showImage = data.image == null ? '' : '<div class="show_image"><img src="' + data.image + '"/></div>';
-    var li = '<li class=' + style_css + ' id=' + data.messageId + '>';
+    var li = '<li class=' + style_css + ' id=' + data.messageId + ' data-receiver=' + data.receiver + '>';
     var a = '<a class="user" ' + event2 + '>';
     var avatar = '<img class="img-responsive avatar_" src=' + user.avatar + '\>';
     var span = '<span class="user-name">' + user.username + '</span></a>';
@@ -371,7 +372,7 @@ function showRevokeMsg(data) {
  * @param message
  */
 function showSystemMsg(message) {
-    var li = '<li class="text-center join_li" id="join_message">' + message + '</li>';
+    var li = '<li><div class="sys_message">' + message + '</div></li>';
     $("#show_content").append(li);
     jumpToLow();
 }
@@ -381,12 +382,27 @@ function showSystemMsg(message) {
  * 撤消消息
  * @param messageId
  */
-function revokeMessage(messageId) {
+function revokeMessage(e) {
+    var dom = $(e).parents('li');
+    var messageId = dom.attr('id');
+    var receiver = dom.data('receiver');
+
     if (messageId === '' || messageId === undefined || !confirm('确定撤回这条消息吗？')) {
         return;
     }
 
-    sendMessage('/chatRoom/revoke', {}, messageId);
+    if (receiver === null || receiver === '' || messageId === undefined) {
+        receiver = null;
+    } else {
+        receiver = receiver.split(',');
+    }
+
+    var data = JSON.stringify({
+        'messageId': messageId,
+        'receiver': receiver
+    });
+
+    sendMessage('/chatRoom/revoke', {}, data);
 }
 
 /**
@@ -772,8 +788,10 @@ function msgNoticeByTitle() {
         return;
     }
 
-    // 提示音
-    beep();
+    if (!silent) {
+        // 提示音
+        beep();
+    }
     // 窗口不可见显示提醒
     document.title = '[' + (++newMsgTotal) + '条新消息]' + title;
 }
@@ -803,9 +821,6 @@ function msgNoticeByBrowser(data) {
  */
 function beep() {
     var beep = document.getElementById('beep');
-    if (beep.src == '') {
-        beep.src = './sounds/qq.mp3';
-    }
     beep.play();
 }
 

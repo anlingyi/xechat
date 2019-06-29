@@ -144,7 +144,7 @@ li {
     background-color: #fcfcfc;
     border-radius: 4px;
     box-shadow: 0 0 5px #ccc;
-    word-wrap: break-word;
+    word-break: break-all;
     width: fit-content;
     width: -webkit-fit-content;
     width: -moz-fit-content;

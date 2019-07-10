@@ -207,7 +207,7 @@ chatrecord.password=c85715fec7827f3b388af185b8e7db77
 
 #### 配置机器人
 
-##### 修改图灵ApiKey
+**修改图灵ApiKey**
 
 ![turing_apikey.png](https://i.loli.net/2019/05/09/5cd3fa34df040.png)
 
@@ -218,7 +218,7 @@ chatrecord.password=c85715fec7827f3b388af185b8e7db77
 turing.apiKey=xxx
 ```
 
-##### 修改机器人信息
+**修改机器人信息**
 
 修改 `cn.xeblog.xechat.constant.RobotConstant` 类中对应常量
 
@@ -255,7 +255,7 @@ public interface RobotConstant {
 }
 ```
 
-##### 修改机器人欢迎信息
+**修改机器人欢迎信息**
 
 修改 `cn.xeblog.xechat.constant.MessageConstant` 类中对应常量
 

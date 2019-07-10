@@ -8,9 +8,22 @@ var stompClient = null;
 var onlineUserList;
 var address = '未知地区';
 
+var title = document.title;
+// 是否打开通知
+var openNotice = true;
+// 通知权限，0不支持通知 1允许通知 2不允许通知 3未获取权限
+var permission = 3;
+// 最新的消息数量
+var newMsgTotal = 0;
+// 窗口可见
+var visible = true;
+// 是否打开提示音
+var opendSound = true;
+
 // 页面加载完成后
 window.onload = function () {
     init();
+    settings();
     $('#content').bind('keyup', showToUserList);
     // 页面加载完成监听回车事件
     document.getElementById("content").addEventListener("keydown", function (e) {
@@ -19,6 +32,20 @@ window.onload = function () {
         // 发送信息
         sendToChatRoom();
     });
+    // 监听窗口切换
+    document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "hidden") {
+            // 窗口不可见
+            visible = false;
+        } else if (document.visibilityState === "visible") {
+            // 窗口可见
+            visible = true;
+            newMsgTotal = 0;
+            document.title = title;
+        }
+    });
+    // 请求获取消息通知权限
+    requestNoticePermission();
 }
 
 // 监听窗口关闭事件，当窗口关闭时，主动去关闭stomp连接
@@ -68,8 +95,8 @@ function sub() {
         // 聊天室动态订阅
         stompClient.subscribe('/topic/status', function (data) {
             var obj = getData(data.body);
+            handleMessage(obj);
             showOnlineNum(obj.onlineCount);
-            showSystemMsg(obj.message);
             showUserList(obj.onlineUserList);
         });
 
@@ -157,13 +184,14 @@ function sendToChatRoom() {
     showToUserList(content);
 
     var toUser = [uid];
-    var strs = content.split('@');
+    var names = content.split('@');
 
-    for (var i = 1; i < strs.length; i++) {
-        var index = strs[i].indexOf(' ');
-        var str = getUserIdByName(strs[i].substr(0, index != -1 ? index : strs[i].length));
-        if (str !== undefined && str !== '') {
-            toUser.push(str);
+    for (var i = 1; i < names.length; i++) {
+        var index = names[i].indexOf(' ');
+        var userId = getUserIdByName(names[i].substr(0, index != -1 ? index : names[i].length));
+        // userId不能是空的，且toUser数组中不存在该userId
+        if (userId !== undefined && userId !== '' && toUser.indexOf(userId) == -1) {
+            toUser.push(userId);
         }
     }
 
@@ -272,12 +300,12 @@ function showUserMsg(data) {
     var user = data.user;
     var isMe = user.userId === uid;
     var style_css = isMe ? 'even' : 'odd';
-    var event = isMe ? 'ondblclick=revokeMessage("' + data.messageId + '")' : '';
+    var event = isMe ? 'ondblclick=revokeMessage(this)' : '';
     var event2 = isMe ? '' : 'ondblclick=showToUser("' + user.username + '")';
 
     var showMessage = data.message == null ? '' : htmlEncode(data.message);
     var showImage = data.image == null ? '' : '<div class="show_image"><img src="' + data.image + '"/></div>';
-    var li = '<li class=' + style_css + ' id=' + data.messageId + '>';
+    var li = '<li class=' + style_css + ' id=' + data.messageId + ' data-receiver=' + data.receiver + '>';
     var a = '<a class="user" ' + event2 + '>';
     var avatar = '<img class="img-responsive avatar_" src=' + user.avatar + '\>';
     var span = '<span class="user-name">' + user.username + '</span></a>';
@@ -297,7 +325,7 @@ function showUserMsg(data) {
  * 跳到聊天界面最底下
  */
 function jumpToLow() {
-    $("ul").scrollTop($("ul")[1].scrollHeight);
+    $("ul").scrollTop($("ul")[2].scrollHeight);
 }
 
 /**
@@ -305,12 +333,13 @@ function jumpToLow() {
  * @param data
  */
 function handleMessage(data) {
+    var msg = data.message;
     switch (data.type) {
         case 'USER':
             showUserMsg(data);
             break;
         case 'SYSTEM':
-            showSystemMsg(data.message)
+            showSystemMsg(msg);
             break;
         case 'REVOKE':
             showRevokeMsg(data);
@@ -321,6 +350,9 @@ function handleMessage(data) {
         default:
             break;
     }
+
+    // 消息通知
+    msgNotice(data);
 }
 
 /**
@@ -341,7 +373,7 @@ function showRevokeMsg(data) {
  * @param message
  */
 function showSystemMsg(message) {
-    var li = '<li class="text-center join_li" id="join_message">' + message + '</li>';
+    var li = '<li><div class="sys_message">' + message + '</div></li>';
     $("#show_content").append(li);
     jumpToLow();
 }
@@ -351,12 +383,27 @@ function showSystemMsg(message) {
  * 撤消消息
  * @param messageId
  */
-function revokeMessage(messageId) {
+function revokeMessage(e) {
+    var dom = $(e).parents('li');
+    var messageId = dom.attr('id');
+    var receiver = dom.data('receiver');
+
     if (messageId === '' || messageId === undefined || !confirm('确定撤回这条消息吗？')) {
         return;
     }
 
-    sendMessage('/chatRoom/revoke', {}, messageId);
+    if (receiver === null || receiver === '' || messageId === undefined) {
+        receiver = null;
+    } else {
+        receiver = receiver.split(',');
+    }
+
+    var data = JSON.stringify({
+        'messageId': messageId,
+        'receiver': receiver
+    });
+
+    sendMessage('/chatRoom/revoke', {}, data);
 }
 
 /**
@@ -414,6 +461,9 @@ function sendImage() {
             }
         });
     }
+
+    // 清空选择的文件
+    $("#file").val('');
 }
 
 /**
@@ -731,4 +781,130 @@ function direDisplay(e) {
         return;
     }
     $('#' + id).hide();
+}
+
+/**
+ * 不在当前窗口时，通过标题显示最新的消息数量
+ */
+function msgNoticeByTitle() {
+    if (!openNotice || visible) {
+        // 未开启通知或窗口可见，不进行提醒
+        return;
+    }
+
+    if (opendSound) {
+        // 提示音
+        beep();
+    }
+    // 窗口不可见显示提醒
+    document.title = '[' + (++newMsgTotal) + '条新消息]' + title;
+}
+
+/**
+ * 通过浏览器的消息通知来推送消息
+ * 兼容性差（Safari、Chrome等浏览器对于pc端基本支持）
+ * @param data
+ */
+function msgNoticeByBrowser(data) {
+    if (permission == 3) {
+        requestNoticePermission();
+    }
+
+    if (permission == 1) {
+        // 创建通知
+        var notice = createNotice(data);
+        notice.onclick = function () {
+            // 切换浏览器窗口到当前界面
+            window.focus();
+        }
+    }
+}
+
+/**
+ * 播放提示音
+ */
+function beep() {
+    var beep = document.getElementById('beep');
+    beep.play();
+}
+
+/**
+ * 创建一条消息通知
+ * @param data
+ * @returns {Notification}
+ */
+function createNotice(data) {
+    var t = '系统消息';
+    var msg = data.message;
+    var user = data.user;
+    var type = data.type;
+    if (type == 'USER' || type == 'ROBOT') {
+        t = user.username;
+        if (msg == null) {
+            msg = "[图片]";
+        }
+    } else if (type == 'REVOKE') {
+        msg = user.username + '撤回了一条消息！';
+    }
+
+    return new Notification('新的消息！' + title, {
+        body: t + '：' + msg,
+        icon: user.avatar
+    });
+}
+
+/**
+ * 请求通知权限
+ */
+function requestNoticePermission() {
+    var flag = window.Notification;
+    if (flag) {
+        Notification.requestPermission(function (perm) {
+            switch (perm) {
+                case "granted":
+                    permission = 1;
+                    break;
+                case "denied":
+                    permission = 2;
+                    break;
+                default:
+                    permission = 3;
+                    break;
+            }
+        });
+    } else {
+        console.log('该浏览器暂不支持通知！');
+        permission = 0;
+    }
+}
+
+/**
+ * 消息通知
+ * @param data
+ */
+function msgNotice(data) {
+    // 已开启通知且窗口不可见才进行消息通知
+    if (openNotice && !visible) {
+        // 通过标题通知
+        msgNoticeByTitle();
+        // 通过浏览器的消息通知支持进行通知
+        msgNoticeByBrowser(data);
+    }
+}
+
+/**
+ * 设置相关
+ */
+function settings() {
+    var checkNotice = $('#checkNotice');
+    checkNotice.on('change', function () {
+        // 是否打开通知
+        openNotice = checkNotice.is(':checked');
+    });
+
+    var checkSound = $('#checkSound');
+    checkSound.on('change', function () {
+        // 是否打开提示音
+        opendSound = checkSound.is(':checked');
+    });
 }

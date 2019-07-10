@@ -5,8 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.io.Serializable;
-
 /**
  * 撤消消息
  *
@@ -17,9 +15,7 @@ import java.io.Serializable;
 @Setter
 @ToString
 @NoArgsConstructor
-public class RevokeMsgVo extends MessageVO implements Serializable {
-
-    private static final long serialVersionUID = 6030369531530945838L;
+public class RevokeMsgVo extends MessageVO {
 
     /**
      * 撤回的消息id

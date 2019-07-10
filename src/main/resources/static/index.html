@@ -7,7 +7,7 @@
     <title>xechat-小毅博客在线聊天室</title>
     <link rel="stylesheet" type="text/css"
           href="./css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <link rel="stylesheet" type="text/css" href="./css/style.css?v=1.2">
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
 
@@ -41,8 +41,19 @@
            class="col-xs-2 text-right"> </a> <a class="text-center col-xs-8"
                                                 target="_blank">聊天室（<font color="orange" id="online_num"><img
             src="./images/loader.gif" width="15" height="15"></font>）</a>
-        <div class="dropdown exit" onclick="exit()">
-            <i class="glyphicon glyphicon-log-out dropdown-toggle"></i>
+        <div class="dropdown settings">
+            <i class="glyphicon glyphicon-cog dropdown-toggle" id="settings" data-toggle="dropdown"></i>
+            <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="settings" id="settings-menu">
+                <li><input type="checkbox" checked id="checkNotice"/>&nbsp;<i
+                        class="glyphicon glyphicon-bell"></i><span>新消息通知</span></li>
+                <li><input type="checkbox" checked id="checkSound"/>&nbsp;<i
+                        class="glyphicon glyphicon-volume-up"></i><span>消息提示音</span></li>
+                <li class="divider"></li>
+                <li style="float: right;margin-right: 10px">
+                    <button type="button" class="btn btn-primary btn-xs" onclick="exit()">退出 <i
+                            class="glyphicon glyphicon-log-out dropdown-toggle"></i></button>
+                </li>
+            </ul>
         </div>
     </div>
     <div class="header"></div>
@@ -73,6 +84,7 @@
     <a href="https://github.com/anlingyi/xechat" target="_blank">
         <i class="fa fa-fw fa-github" style="font-size: 16px;"></i>GitHub</a>
 </div>
-<script type="text/javascript" src="./js/xechat.js"></script>
+<audio id="beep" src="./sounds/qq.mp3"></audio>
+<script type="text/javascript" src="./js/xechat.js?v=1.2"></script>
 </body>
 </html>

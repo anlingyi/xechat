@@ -64,8 +64,16 @@ public class CheckUtils {
      * @return true是图片 false不是图片
      */
     public static boolean isImage(String type) {
-        return ".jpg".equals(type) || ".jpeg".equals(type) || ".png".equals(type) || ".bmp".equals(type)
-                || ".gif".equals(type);
+        switch (StringUtils.lowerCase(type)) {
+            case "jpg":
+            case "png":
+            case "bmp":
+            case "gif":
+            case "jpeg":
+                return true;
+            default:
+                return false;
+        }
     }
 
     /**
@@ -75,7 +83,7 @@ public class CheckUtils {
      * @return true:合法 false:不合法
      */
     public static boolean checkToken(String token) {
-        return StringUtils.isEmpty(token) ? false : password.equals(DigestUtils.md5Hex(token));
+        return StringUtils.isNotEmpty(token) && password.equals(DigestUtils.md5Hex(token));
     }
 
     /**

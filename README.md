@@ -1,7 +1,28 @@
-[xechat](https://im.xeblog.cn)
+[xechat](https://chat.xeblog.cn:8088)
 ===
 
 > 基于SpringBoot+STOMP协议实现的web聊天室
+
+* [目录](#xechat)
+   * [环境](#环境)
+   * [部署](#部署)
+      * [创建目录并授权](#创建目录并授权)
+      * [修改应用地址](#修改应用地址)
+      * [修改百度地图API](#修改百度地图api)
+      * [编译运行](#编译运行)
+   * [功能](#功能)
+      * [登入](#登入)
+      * [发送消息](#发送消息)
+      * [@好友可进行私聊](#好友可进行私聊)
+      * [敏感词检测](#敏感词检测)
+      * [注销](#注销)
+      * [消息撤消](#消息撤消)
+      * [聊天记录](#聊天记录)
+         * [密码加密方式](#密码加密方式)
+   * [v1.2更新](#v12更新)
+      * [接入图灵机器人](#接入图灵机器人)
+      * [配置机器人](#配置机器人)
+      * [新消息通知](#新消息通知)
 
 ## 环境
 
@@ -52,6 +73,8 @@ java -jar ${finalName}.jar --spring.profiles.active=${env}
 ```
 
 ## 功能
+
+> https://xeblog.cn/articles/13
 
 ### 登入
 
@@ -192,9 +215,11 @@ chatrecord.password=c85715fec7827f3b388af185b8e7db77
 
 ![](https://i.loli.net/2019/04/06/5ca83f7252659.png)
 
-# v1.2更新
+## v1.2更新
 
-## 接入图灵机器人
+### 接入图灵机器人
+
+> [https://xeblog.cn/articles/14](https://xeblog.cn/articles/14)
 
 > 图灵机器人官网 [http://www.turingapi.com](http://www.turingapi.com)  
 > API文档 [https://www.kancloud.cn/turing/www-tuling123-com/718227](https://www.kancloud.cn/turing/www-tuling123-com/718227)
@@ -203,7 +228,7 @@ chatrecord.password=c85715fec7827f3b388af185b8e7db77
 
 ### 配置机器人
 
-#### 修改图灵ApiKey
+**修改图灵ApiKey**
 
 ![turing_apikey.png](https://i.loli.net/2019/05/09/5cd3fa34df040.png)
 
@@ -214,7 +239,7 @@ chatrecord.password=c85715fec7827f3b388af185b8e7db77
 turing.apiKey=xxx
 ```
 
-### 修改机器人信息
+**修改机器人信息**
 
 修改 `cn.xeblog.xechat.constant.RobotConstant` 类中对应常量
 
@@ -251,7 +276,7 @@ public interface RobotConstant {
 }
 ```
 
-### 修改机器人欢迎信息
+**修改机器人欢迎信息**
 
 修改 `cn.xeblog.xechat.constant.MessageConstant` 类中对应常量
 
@@ -282,7 +307,7 @@ public interface MessageConstant {
 
 ```
 
-### 实际效果
+**实际效果**
 
 ![xechat_v1.2_1.png](https://i.loli.net/2019/05/09/5cd4175b9b284.png)
 
@@ -295,3 +320,15 @@ public interface MessageConstant {
 ![xechat_v1.2_5.png](https://i.loli.net/2019/05/09/5cd4175bacd75.png)
 
 ![靓仔语塞.gif](https://i.loli.net/2019/05/09/5cd4196fd7e4c.gif)
+
+### 新消息通知
+
+> [https://xeblog.cn/articles/22](https://xeblog.cn/articles/22)
+
+通过勾选新消息通知、消息提示音等设置项开启相应功能。
+
+![xechat_v1.2_6.png](https://oss.xeblog.cn/prod/89d1f5d2fa8d41e7b6e8d54014de9919.png)
+
+通知效果
+
+![xechat_v1.2_7.png](https://oss.xeblog.cn/prod/e8fc9629eaff4751aeb7b0e5330ffda5.png)

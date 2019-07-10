@@ -205,7 +205,7 @@ chatrecord.password=c85715fec7827f3b388af185b8e7db77
 
 ![xechat_v1.2.png](https://i.loli.net/2019/05/09/5cd3ed540d264.png)
 
-#### 配置机器人
+### 配置机器人
 
 **修改图灵ApiKey**
 
@@ -286,7 +286,7 @@ public interface MessageConstant {
 
 ```
 
-#### 实际效果
+**实际效果**
 
 ![xechat_v1.2_1.png](https://i.loli.net/2019/05/09/5cd4175b9b284.png)
 

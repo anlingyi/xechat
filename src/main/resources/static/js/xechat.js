@@ -461,6 +461,9 @@ function sendImage() {
             }
         });
     }
+
+    // 清空选择的文件
+    $("#file").val('');
 }
 
 /**

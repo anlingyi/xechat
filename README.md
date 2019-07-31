@@ -6,7 +6,7 @@
 * [目录](#xechat)
    * [环境](#环境)
    * [部署](#部署)
-      * [Linux & Windows](#Linux & Windows)
+      * [Linux & Windows](#linux--windows)
         * [创建目录并授权](#创建目录并授权)
         * [修改应用地址](#修改应用地址)
         * [修改百度地图API](#修改百度地图api)

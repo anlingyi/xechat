@@ -6,10 +6,11 @@
 * [目录](#xechat)
    * [环境](#环境)
    * [部署](#部署)
-      * [创建目录并授权](#创建目录并授权)
-      * [修改应用地址](#修改应用地址)
-      * [修改百度地图API](#修改百度地图api)
-      * [编译运行](#编译运行)
+      * [Linux & Windows](#Linux & Windows)
+        * [创建目录并授权](#创建目录并授权)
+        * [修改应用地址](#修改应用地址)
+        * [修改百度地图API](#修改百度地图api)
+        * [编译运行](#编译运行)
    * [功能](#功能)
       * [登入](#登入)
       * [发送消息](#发送消息)
@@ -33,7 +34,15 @@
 
 ## 部署
 
-### 创建目录并授权
+### Linux & Windows
+
+> 部署前需先安装配置好 `JDK8` 、`Maven3` 等环境。
+
+#### 创建目录并授权
+
+`Linux` 系统一般需执行此步骤。    
+`Windows` 系统默认创建的目录在项目所处的盘符根目录中，需修改 `application.properties` 里的目录映射配置 
+`file.directoryMapping＝所在盘符:\\xechat\\`
 
 ```
 # 存放日志的目录
@@ -45,7 +54,9 @@ sudo chmod 777 /var/log/xechat
 sudo chmod 777 /xechat
 ```
 
-### 修改应用地址
+#### 修改应用地址
+
+> 此配置会影响到聊天图片和聊天记录等文件的访问，本地部署默认即可，线上服务器部署请修改为服务器公网IP或访问域名。
 
 `application.properties` 配置文件里将 `app.url` 的值修改即可
 
@@ -54,7 +65,9 @@ sudo chmod 777 /xechat
 app.url=http://localhost:${server.port}
 ```
 
-### 修改百度地图API
+#### 修改百度地图API
+
+> 不改也行。。。
 
 项目中的定位功能使用的是百度地图的API
 
@@ -62,11 +75,12 @@ app.url=http://localhost:${server.port}
 
 ![](https://i.loli.net/2019/04/06/5ca84c07051d7.png)
 
-### 编译运行
+#### 编译运行
 
 finalName: `maven`打包的文件名，在`pom.xml`文件中由`<build>`标签内的`<finalName>`指定
 
 env: 项目运行环境，测试环境`test` 生产环境`prod`
+
 ```
 mvn clean install -Dmaven.test.skip=true
 java -jar ${finalName}.jar --spring.profiles.active=${env}

@@ -49,7 +49,7 @@ public class ChatRecordAspect {
         Assert.notNull(messageVO, "方法必需以MessageVO类或该类的子类作为参数");
 
         if (messageVO.getType() == MessageTypeEnum.USER) {
-            // 对于用于类型的消息做敏感词处理
+            // 对于User类型的消息做敏感词处理
             messageVO.setMessage(SensitiveWordUtils.loveChina(messageVO.getMessage()));
         }
 

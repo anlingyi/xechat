@@ -48,8 +48,7 @@ public class UploadServiceImpl implements UploadService {
         String fileName = UUIDUtils.create() + "." + type;
         String respPath = fileConfig.getAccessAddress() + fileName;
 
-        File file = new File(fileConfig.getDirectoryMapping().replace("file:", "") +
-                fileConfig.getUploadPath() + fileName);
+        File file = new File(fileConfig.getDirectoryMapping() + fileConfig.getUploadPath() + fileName);
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }

@@ -26,7 +26,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(fileConfig.getStaticAccessPath())
                 .addResourceLocations("classpath:/META-INF/resources/", "classpath:/resources/", "classpath:/static/",
-                        fileConfig.getDirectoryMapping());
+                        "file:" + fileConfig.getDirectoryMapping());
     }
 
     @Override
